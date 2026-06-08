@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dodaj kategorię</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<h1>Dodaj kategorię</h1>
+
+<form th:action="@{/categories/save}"
+      th:object="${category}"
+      method="post">
+
+    Nazwa:
+
+    <input type="text"
+           th:field="*{nazwa}">
+
+    <span th:if="${#fields.hasErrors('nazwa')}"
+          th:errors="*{nazwa}">
+    </span>
+
+    <br><br>
+
+    <button type="submit">
+        Dodaj
+    </button>
+
+</form>
+
+<br><br>
+
+<a href="/">
+    Strona główna
+</a>
+
+</body>
+</html>

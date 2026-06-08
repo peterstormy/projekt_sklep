@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Produkty</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
@@ -13,6 +14,78 @@
 
 <br><br>
 
+<h3>Sortowanie</h3>
+
+<a href="/products?sortField=nazwa&sortDir=asc">
+    Nazwa ↑
+</a>
+
+|
+
+<a href="/products?sortField=nazwa&sortDir=desc">
+    Nazwa ↓
+</a>
+
+<br><br>
+
+<a href="/products?sortField=cena&sortDir=asc">
+    Cena ↑
+</a>
+
+|
+
+<a href="/products?sortField=cena&sortDir=desc">
+    Cena ↓
+</a>
+
+<br><br>
+
+<a href="/products?sortField=dataDodania&sortDir=asc">
+    Data ↑
+</a>
+
+|
+
+<a href="/products?sortField=dataDodania&sortDir=desc">
+    Data ↓
+</a>
+
+<br><br>
+
+<h3>Filtr daty</h3>
+
+<form action="/products" method="get">
+
+    <input type="date" name="data">
+
+    <button type="submit">
+        Filtruj
+    </button>
+
+</form>
+
+<br><br>
+
+<h3>Filtr kategorii</h3>
+
+<a href="/products">
+    Wszystkie
+</a>
+
+<br><br>
+
+<div th:each="category : ${categories}">
+
+    <a th:href="@{/products(categoryId=${category.id})}"
+       th:text="${category.nazwa}">
+    </a>
+
+    <br>
+
+</div>
+
+<br><br>
+
 <table border="1">
 
     <tr>
@@ -20,15 +93,41 @@
         <th>Nazwa</th>
         <th>Cena</th>
         <th>Ilość</th>
+        <th>Data dodania</th>
+        <th>Kategoria</th>
+        <th>Link</th>
         <th>Edytuj</th>
         <th>Usuń</th>
     </tr>
 
     <tr th:each="product : ${products}">
+
         <td th:text="${product.id}"></td>
+
         <td th:text="${product.nazwa}"></td>
+
         <td th:text="${product.cena}"></td>
+
         <td th:text="${product.ilosc}"></td>
+
+        <td th:text="${product.dataDodania}"></td>
+
+        <td th:text="${product.category != null ? product.category.nazwa : 'Brak kategorii'}"></td>
+
+        <td>
+
+    <span th:if="${product.publiczny}">
+
+        <a th:href="@{/public/product/{id}(id=${product.id})}">
+
+            Otwórz
+
+        </a>
+
+    </span>
+
+        </td>
+
         <td>
             <a th:href="@{/products/edit/{id}(id=${product.id})}">
                 Edytuj
@@ -40,9 +139,16 @@
                 Usuń
             </a>
         </td>
+
     </tr>
 
 </table>
+
+<br><br>
+
+<a href="/">
+    Strona główna
+</a>
 
 </body>
 </html>

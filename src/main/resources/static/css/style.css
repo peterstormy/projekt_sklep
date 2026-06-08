@@ -1,0 +1,32 @@
+body{
+    font-family: Arial;
+    margin: 30px;
+    background-color: #f5f5f5;
+}
+
+h1{
+    color: darkblue;
+}
+
+table{
+    border-collapse: collapse;
+    background-color: white;
+}
+
+th, td{
+    padding: 10px;
+    border: 1px solid black;
+}
+
+a{
+    text-decoration: none;
+    font-weight: bold;
+}
+
+input, select{
+    padding: 5px;
+}
+
+button{
+    padding: 8px;
+}

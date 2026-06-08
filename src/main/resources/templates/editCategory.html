@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edytuj kategorię</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<h1>Edytuj kategorię</h1>
+
+<form th:action="@{/categories/update}"
+      th:object="${category}"
+      method="post">
+
+    <input type="hidden"
+           th:field="*{id}">
+
+    Nazwa:
+
+    <input type="text"
+           th:field="*{nazwa}">
+
+    <br><br>
+
+    <button type="submit">
+        Zapisz
+    </button>
+
+</form>
+
+<br><br>
+
+<a href="/">
+    Strona główna
+</a>
+
+</body>
+</html>

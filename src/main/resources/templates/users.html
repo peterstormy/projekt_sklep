@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Użytkownicy</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<h1>Lista użytkowników</h1>
+
+<table border="1">
+
+    <tr>
+        <th>ID</th>
+        <th>Imię</th>
+        <th>Nazwisko</th>
+        <th>Login</th>
+        <th>Wiek</th>
+        <th>Rola</th>
+        <th>Zmień rolę</th>
+    </tr>
+
+    <tr th:each="user : ${users}">
+
+        <td th:text="${user.id}"></td>
+        <td th:text="${user.imie}"></td>
+        <td th:text="${user.nazwisko}"></td>
+        <td th:text="${user.login}"></td>
+        <td th:text="${user.wiek}"></td>
+        <td th:text="${user.rola}"></td>
+        <td>
+            <a th:href="@{/users/editRole/{id}(id=${user.id})}">
+                Zmień
+            </a>
+        </td>
+
+    </tr>
+
+</table>
+
+<br><br>
+
+<a href="/">
+    Powrót do strony głównej
+</a>
+
+</body>
+</html>

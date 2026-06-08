@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dodaj zamówienie</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<h1>Dodaj zamówienie</h1>
+
+<form th:action="@{/orders/save}"
+      th:object="${order}"
+      method="post">
+
+    Data:
+
+    <input type="date"
+           th:field="*{dataZamowienia}">
+
+    <br><br>
+
+    Status:
+
+    <select th:field="*{status}">
+
+        <option value="NOWE">
+            NOWE
+        </option>
+
+        <option value="W_REALIZACJI">
+            W REALIZACJI
+        </option>
+
+        <option value="ZAKONCZONE">
+            ZAKOŃCZONE
+        </option>
+
+    </select>
+
+    <br><br>
+
+    Produkty:
+
+    <br><br>
+
+    <select th:field="*{products}" multiple size="5">
+
+        <option th:each="product : ${products}"
+                th:value="${product.id}"
+                th:text="${product.nazwa}">
+        </option>
+
+    </select>
+
+    <br><br>
+
+    <button type="submit">
+        Dodaj zamówienie
+    </button>
+
+</form>
+
+<br><br>
+
+<a href="/">
+    Strona główna
+</a>
+
+</body>
+</html>

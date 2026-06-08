@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edytuj zamówienie</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<h1>Edytuj zamówienie</h1>
+
+<form th:action="@{/orders/update}"
+      th:object="${order}"
+      method="post">
+
+    <input type="hidden"
+           th:field="*{id}">
+
+    Data:
+
+    <input type="date"
+           th:field="*{dataZamowienia}">
+
+    <br><br>
+
+    Status:
+
+    <select th:field="*{status}">
+
+        <option value="NOWE">
+            NOWE
+        </option>
+
+        <option value="W_REALIZACJI">
+            W REALIZACJI
+        </option>
+
+        <option value="ZAKONCZONE">
+            ZAKOŃCZONE
+        </option>
+
+    </select>
+
+    <br><br>
+
+    Produkty:
+
+    <br><br>
+
+    <select th:field="*{products}"
+            multiple
+            size="5">
+
+        <option th:each="product : ${products}"
+                th:value="${product.id}"
+                th:text="${product.nazwa}">
+        </option>
+
+    </select>
+
+    <br><br>
+
+    <button type="submit">
+        Zapisz
+    </button>
+
+</form>
+
+<br><br>
+
+<a href="/orders">
+    Powrót
+</a>
+
+</body>
+</html>

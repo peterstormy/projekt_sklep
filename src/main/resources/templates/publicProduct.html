@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Udostępniony produkt</title>
+    <link rel="stylesheet"
+          th:href="@{/css/style.css}">
+</head>
+<body>
+
+<h1>Udostępniony produkt</h1>
+
+<p>
+
+    <b>Nazwa:</b>
+
+    <span th:text="${product.nazwa}"></span>
+
+</p>
+
+<p>
+
+    <b>Opis:</b>
+
+    <span th:text="${product.opis}"></span>
+
+</p>
+
+<p>
+
+    <b>Cena:</b>
+
+    <span th:text="${product.cena}"></span>
+
+</p>
+
+<p>
+
+    <b>Ilość:</b>
+
+    <span th:text="${product.ilosc}"></span>
+
+</p>
+
+<p>
+
+    <b>Data dodania:</b>
+
+    <span th:text="${product.dataDodania}"></span>
+
+</p>
+
+<p>
+
+    <b>Kategoria:</b>
+
+    <span th:text="${product.category != null ? product.category.nazwa : 'Brak'}"></span>
+
+</p>
+
+<br><br>
+
+<a href="/login">
+    Zaloguj się
+</a>
+
+</body>
+</html>

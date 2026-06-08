@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Zamówienia</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<h1>Lista zamówień</h1>
+
+<a href="/orders/add">
+    Dodaj zamówienie
+</a>
+
+<br><br>
+
+<table border="1">
+
+    <tr>
+        <th>ID</th>
+        <th>Data</th>
+        <th>Status</th>
+        <th>Produkty</th>
+        <th>Edytuj</th>
+        <th>Usuń</th>
+    </tr>
+
+    <tr th:each="order : ${orders}">
+
+        <td th:text="${order.id}"></td>
+
+        <td th:text="${order.dataZamowienia}"></td>
+
+        <td th:text="${order.status}"></td>
+
+        <td>
+            <span th:each="product : ${order.products}"
+                  th:text="${product.nazwa + ' '}">
+            </span>
+        </td>
+
+        <td>
+            <a th:href="@{/orders/edit/{id}(id=${order.id})}">
+                Edytuj
+            </a>
+        </td>
+
+        <td>
+            <a th:href="@{/orders/delete/{id}(id=${order.id})}">
+                Usuń
+            </a>
+        </td>
+
+    </tr>
+
+</table>
+
+<br><br>
+
+<a href="/">
+    Powrót do strony głównej
+</a>
+
+</body>
+</html>

@@ -1,15 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Sklep komputerowy</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-<h1>Witaj w sklepie komputerowym!</h1>
+<center>
+    <p>
+        Zalogowany użytkownik:
+        <span th:text="${#authentication.name}"></span>
+    </p>
+    <h1>SKLEP KOMPUTEROWY</h1>
 
-<p>Pierwsza strona działa.</p>
+    <h3>System zarządzania sklepem</h3>
 
-<a href="/products">Przejdź do produktów</a>
+    <hr width="50%">
+
+    <br>
+
+    <a href="/products">
+        Produkty
+    </a>
+
+    <br><br>
+
+    <a href="/categories">
+        Kategorie
+    </a>
+
+    <br><br>
+
+    <a href="/orders">
+        Zamówienia
+    </a>
+
+    <br><br>
+
+    <div sec:authorize="hasRole('ADMIN')">
+        <a href="/users">
+            Użytkownicy
+        </a>
+    </div>
+
+    <br><br>
+
+    <hr width="50%">
+
+    <br><br>
+
+    <br><br>
+
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">
+            Wyloguj
+        </button>
+    </form>
+
+</center>
 
 </body>
 </html>
