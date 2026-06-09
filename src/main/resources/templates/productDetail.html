@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6">
+<head>
+    <title th:text="${product.nazwa}">Produkt</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<h1 th:text="${product.nazwa}"></h1>
+
+<p>
+    <b>Producent:</b>
+    <span th:text="${product.producent}"></span>
+</p>
+
+<p>
+    <b>Kategoria:</b>
+    <span th:text="${product.category != null ? product.category.nazwa : 'Brak'}"></span>
+</p>
+
+<p>
+    <b>Opis:</b>
+    <span th:text="${product.opis}"></span>
+</p>
+
+<p>
+    <b>Cena:</b>
+    <span th:text="${product.cena + ' zł'}"></span>
+</p>
+
+<p>
+    <b>Dostępność:</b>
+    <span th:text="${product.ilosc > 0 ? product.ilosc + ' szt.' : 'Brak w magazynie'}"></span>
+</p>
+
+<p>
+    <b>Data dodania:</b>
+    <span th:text="${product.dataDodania}"></span>
+</p>
+
+<div th:if="${not #lists.isEmpty(product.specyfikacja)}">
+    <br>
+    <h3>Specyfikacja</h3>
+    <table border="1">
+        <tr th:each="spec : ${product.specyfikacja}">
+            <td><b th:text="${spec.klucz}"></b></td>
+            <td th:text="${spec.wartosc}"></td>
+        </tr>
+    </table>
+</div>
+
+<br>
+
+<div sec:authorize="hasAnyRole('ADMIN', 'EMPLOYEE')">
+    <a th:href="@{/products/edit/{id}(id=${product.id})}">Edytuj</a>
+    &nbsp;|&nbsp;
+    <a th:href="@{/products/delete/{id}(id=${product.id})}">Usuń</a>
+    <br><br>
+</div>
+
+<a href="/products">Powrót do listy produktów</a>
+
+<br><br>
+
+<a href="/">Strona główna</a>
+
+</body>
+</html>
