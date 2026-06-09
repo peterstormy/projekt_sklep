@@ -1,11 +1,23 @@
 # Projekt Sklep — Spring Boot
 
-Aplikacja webowa sklepu komputerowego zrealizowana w Spring Boot + Thymeleaf + Spring Security.
+Aplikacja webowa sklepu komputerowego zrealizowana w Spring Boot + Thymeleaf + Spring Security + PostgreSQL.
 Projekt łączy wymagania z **Programowania aplikacji WWW w języku Java** oraz **Systemów Baz Danych**.
 
 ---
 
 ## Uruchomienie
+
+### 1. Baza danych (Docker)
+
+Przed uruchomieniem aplikacji należy wystartować bazę PostgreSQL:
+
+```bash
+docker compose up -d
+```
+
+> Docker musi być uruchomiony. Baza działa na `localhost:5432`, baza danych: `sklep`.
+
+### 2. Aplikacja
 
 ```bash
 chmod +x mvnw
@@ -13,6 +25,8 @@ chmod +x mvnw
 ```
 
 Aplikacja dostępna pod: `http://localhost:8080`
+
+> Przy pierwszym uruchomieniu DataLoader automatycznie załaduje 7 kategorii, 20 produktów ze specyfikacjami oraz 3 konta testowe.
 
 ### Konta testowe
 
@@ -22,72 +36,81 @@ Aplikacja dostępna pod: `http://localhost:8080`
 | `user` | `user` | USER |
 | `employee` | `employee` | EMPLOYEE |
 
----
+### Konta bazodanowe
 
-## TODO — co pozostało do zrobienia
-
-### Java — brakuje całkowicie
-
-| Co | Punkty | Priorytet |
+| Login | Hasło | Uprawnienia |
 |---|---|---|
-| Usługa REST (`@RestController` dla Product/Category/Order) | 10p | KRYTYCZNY |
-| Klient REST (`RestTemplate` wywołujący własne endpointy REST) | 2p | Wysoki |
-| Ciasteczka (`HttpServletResponse.addCookie`) | 2p | Wysoki |
-| Zapis do DB dopiero przy wylogowaniu/wygaśnięciu sesji (`HttpSessionListener`) | 2p | Wysoki |
-
-### Java — do naprawienia/uzupełnienia
-
-| Co | Problem |
-|---|---|
-| Walidacja `User` | Brak `@NotBlank`, `@Size`, `@Min` na polach + brak `@Valid` w `RegisterController.saveUser()` |
-| Walidacja `Order` | Brak adnotacji walidacyjnych na klasie + brak `@Valid` w `saveOrder()` |
-| Filtr daty | Szuka dokładnej daty zamiast `>=` — powinno być `findByDataDodaniaGreaterThanEqual()` |
-| Filtr kategorii | Powinien być posortowany od najpopularniejszej (zapytanie `GROUP BY category + COUNT`) |
-| WCAG 2.1 | Brak `lang="pl"` w `<html>`, brak `<label for>` przy inputach, użycie `<center>`, brak `<main>`/`<nav>`/`<header>` |
-| Rola EMPLOYEE | Istnieje w danych ale brak reguł w `SecurityConfig` — rola nic nie robi |
-| `pom.xml` | Błędne nazwy zależności (`spring-boot-starter-webmvc`, `spring-boot-starter-data-jpa-test` itp.) |
-| Sesja | Używana tylko do sortowania — warto rozszerzyć żeby uzasadnić 3p |
-
-### SBD — brakuje całkowicie
-
-| Co | Opis |
-|---|---|
-| Zmiana H2 → PostgreSQL | H2 in-memory nie wspiera zarządzania użytkownikami DB ani audytu |
-| Konta użytkowników DB | `Administrator` (owner), `ApplicationIdentity` (READ/WRITE/EXECUTE), konta deweloperskie (READ) |
-| Rola `db_procexecutor` | Rola z uprawnieniem EXECUTE do procedur składowanych |
-| Audyt bazy | Logowanie operacji DML (INSERT, UPDATE, DELETE) — przez `pgaudit` lub triggery |
-| Dokumentacja SBD | Tabela użytkowników z rolami, tabela ról z opisem, screenshoty logów audytu |
+| `app_identity` | `App_2026!` | Konto aplikacji (READ/WRITE/EXECUTE) |
+| `dev_student` | `Dev_2026!` | Konto deweloperskie (tylko READ) |
+| `admin_db` | `Admin_2026!` | Administrator bazy danych |
 
 ---
 
 ## Co już działa
 
-### Elementy techniczne
+### Infrastruktura
+
+| Element | Status |
+|---|---|
+| PostgreSQL 16 w Docker | ✅ |
+| Role DB: `app_role`, `dev_role`, `db_procexecutor` | ✅ |
+| Użytkownicy DB z odpowiednimi uprawnieniami | ✅ |
+| Audyt DML (INSERT/UPDATE/DELETE) via triggery PL/pgSQL + tabela `audit_log` (JSONB) | ✅ |
+
+### Elementy techniczne (Java)
 
 | Element | Status |
 |---|---|
 | Kontrolery MVC (7 kontrolerów) | ✅ |
-| Baza danych — 4 tabele z relacjami JPA | ✅ |
-| Widoki Thymeleaf (8+ znaczników, formularze z walidacją) | ✅ |
+| Modele JPA: User, Category, Product, ProductSpec, Order | ✅ |
+| Widoki Thymeleaf z formularzami i walidacją | ✅ |
 | Spring Security z bazą danych, 3 role | ✅ |
-| Sesja — zapamiętanie kryterium i kierunku sortowania | ✅ (częściowo) |
+| Sesja — zapamiętanie kryterium i kierunku sortowania | ✅ |
 
 ### Funkcjonalności
 
 | Element | Status |
 |---|---|
 | Pełny CRUD — Product, Category, Order | ✅ |
-| Walidacja formularza — 6 reguł na Product | ✅ |
-| Edycja na danych bieżących | ✅ |
-| Sortowanie wg 3 kryteriów w obu kierunkach | ✅ |
-| Zapamiętanie kryterium i kierunku sortowania | ✅ |
-| Filtrowanie wg daty i kategorii | ✅ (częściowo) |
-| Logowanie (Spring Security) | ✅ |
-| Rejestracja bez logowania | ✅ |
-| Strona powitalna | ✅ |
-| Publiczny link do produktu (niezalogowany) | ✅ |
-| Lista użytkowników (tylko ADMIN) | ✅ |
-| Zarządzanie rolami (tylko ADMIN) | ✅ |
+| Walidacja formularza produktu (6 reguł `@NotBlank`, `@Size`, `@DecimalMin`, `@Min`) | ✅ |
+| Strona szczegółów produktu z tabelą specyfikacji technicznej | ✅ |
+| 20 produktów w 7 kategoriach z pełnymi specyfikacjami | ✅ |
+| Sortowanie po kolumnach (klikalne nagłówki, strzałki, 3-klik reset) | ✅ |
+| Filtrowanie wg kategorii | ✅ |
+| Filtrowanie wg daty (produkty dodane od wybranej daty) | ✅ |
+| Ukrycie akcji admin/employee przed rolą USER (`sec:authorize`) | ✅ |
+| Logowanie i rejestracja (Spring Security) | ✅ |
+| Publiczny link do produktu (dostępny bez logowania) | ✅ |
+| Lista użytkowników + zarządzanie rolami (tylko ADMIN) | ✅ |
+
+---
+
+## TODO — co pozostało do zrobienia
+
+### Java — brakuje całkowicie
+
+| Co | Punkty |
+|---|---|
+| Usługa REST (`@RestController` dla Product/Category/Order) | 10p |
+| Klient REST (`RestTemplate` wywołujący własne endpointy) | 2p |
+| Ciasteczka (`HttpServletResponse.addCookie`) | 2p |
+| Zapis do DB przy wylogowaniu/wygaśnięciu sesji (`HttpSessionListener`) | 2p |
+
+### Java — do uzupełnienia
+
+| Co | Problem |
+|---|---|
+| Walidacja `User` | Brak `@NotBlank`, `@Size`, `@Min` na polach + brak `@Valid` w `RegisterController` |
+| Walidacja `Order` | Brak adnotacji walidacyjnych + brak `@Valid` w `saveOrder()` |
+| Filtr kategorii | Powinien być posortowany od najpopularniejszej (GROUP BY + COUNT) |
+| Rola EMPLOYEE | Brak dedykowanych reguł w `SecurityConfig` |
+| WCAG 2.1 | Brak `lang="pl"`, `<label for>`, znaczników semantycznych |
+
+### SBD — dokumentacja
+
+| Co | Opis |
+|---|---|
+| Dokumentacja | Tabela użytkowników z rolami, opis triggerów, screenshoty `audit_log` |
 
 ---
 
@@ -96,6 +119,7 @@ Aplikacja dostępna pod: `http://localhost:8080`
 ```
 src/main/java/com/example/projekt_sklep/
 ├── config/
+│   ├── AuditSetup.java          # Uruchamia audit SQL po starcie aplikacji
 │   ├── PasswordConfig.java
 │   └── SecurityConfig.java
 ├── controller/
@@ -110,14 +134,26 @@ src/main/java/com/example/projekt_sklep/
 │   ├── Category.java
 │   ├── Order.java
 │   ├── Product.java
+│   ├── ProductSpec.java         # Specyfikacje techniczne produktu (klucz/wartość)
 │   └── User.java
 ├── repository/
 │   ├── CategoryRepository.java
 │   ├── OrderRepository.java
 │   ├── ProductRepository.java
+│   ├── ProductSpecRepository.java
 │   └── UserRepository.java
 ├── service/
 │   └── CustomUserDetailsService.java
-├── DataLoader.java
+├── DataLoader.java              # Ładuje dane testowe przy pierwszym uruchomieniu
 └── ProjektSklepApplication.java
+
+database/
+├── 01_roles.sql                 # Role bazodanowe
+├── 02_users.sql                 # Użytkownicy bazodanowi
+└── 03_audit.sql                 # Tabela audit_log + triggery PL/pgSQL
+
+src/main/resources/
+├── audit/
+│   └── 03_audit.sql             # Kopia skryptu audytu (wykonywana przez AuditSetup.java)
+└── templates/                   # Szablony Thymeleaf
 ```
