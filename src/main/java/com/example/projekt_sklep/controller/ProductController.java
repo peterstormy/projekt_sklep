@@ -62,7 +62,7 @@ public class ProductController {
 
             model.addAttribute(
                     "products",
-                    productRepository.findByDataDodania(
+                    productRepository.findByDataDodaniaGreaterThanEqual(
                             LocalDate.parse(data)
                     )
             );
@@ -170,6 +170,24 @@ public class ProductController {
         productRepository.deleteById(id);
 
         return "redirect:/products";
+    }
+
+    @GetMapping("/products/{id}")
+    public String productDetail(
+            @PathVariable Long id,
+            Model model) {
+
+        Product product =
+                productRepository
+                        .findById(id)
+                        .orElse(null);
+
+        if (product == null) {
+            return "redirect:/products";
+        }
+
+        model.addAttribute("product", product);
+        return "productDetail";
     }
 
     @GetMapping("/public/product/{id}")

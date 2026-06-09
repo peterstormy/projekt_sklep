@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Zmienne srodowiskowe (hasla) ###
+.env
+*.env.local
+application-local.properties

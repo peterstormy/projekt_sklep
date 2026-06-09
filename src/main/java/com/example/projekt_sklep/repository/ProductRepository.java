@@ -11,7 +11,7 @@ public interface ProductRepository
 
     List<Product> findByCategoryId(Long id);
 
-    List<Product> findByDataDodania(
+    List<Product> findByDataDodaniaGreaterThanEqual(
             LocalDate dataDodania
     );
 

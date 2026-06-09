@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -23,7 +24,7 @@ public class Product {
     private Long id;
 
     @NotBlank(message = "Nazwa jest wymagana")
-    @Size(min = 3, max = 30)
+    @Size(min = 3, max = 100)
     private String nazwa;
 
     @NotBlank(message = "Opis jest wymagany")
@@ -36,11 +37,19 @@ public class Product {
     @Min(0)
     private Integer ilosc;
 
+    @NotBlank(message = "Producent jest wymagany")
+    @Size(min = 2, max = 50)
+    private String producent;
+
     private LocalDate dataDodania;
 
     @ManyToOne
     private Category category;
 
     private boolean publiczny;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OrderBy("kolejnosc ASC")
+    private List<ProductSpec> specyfikacja = new ArrayList<>();
 
 }

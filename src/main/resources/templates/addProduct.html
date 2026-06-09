@@ -26,6 +26,13 @@
 
     <br><br>
 
+    <label>Producent:</label>
+    <input type="text" th:field="*{producent}">
+    <span th:if="${#fields.hasErrors('producent')}"
+          th:errors="*{producent}"></span>
+
+    <br><br>
+
     <label>Cena:</label>
     <input type="number"
            step="0.01"

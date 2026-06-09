@@ -13,58 +13,42 @@
       method="post">
 
     Data:
-
-    <input type="date"
-           th:field="*{dataZamowienia}">
+    <input type="date" th:field="*{dataZamowienia}">
 
     <br><br>
 
     Status:
-
     <select th:field="*{status}">
-
-        <option value="NOWE">
-            NOWE
-        </option>
-
-        <option value="W_REALIZACJI">
-            W REALIZACJI
-        </option>
-
-        <option value="ZAKONCZONE">
-            ZAKOŃCZONE
-        </option>
-
+        <option value="NOWE">NOWE</option>
+        <option value="W_REALIZACJI">W REALIZACJI</option>
+        <option value="ZAKONCZONE">ZAKOŃCZONE</option>
     </select>
 
     <br><br>
 
-    Produkty:
+    <b>Produkty:</b>
 
     <br><br>
 
-    <select th:field="*{products}" multiple size="5">
+    <div th:each="product : ${products}">
+        <label>
+            <input type="checkbox"
+                   th:field="*{products}"
+                   th:value="${product.id}">
+            <span th:text="${product.nazwa + ' — ' + product.cena + ' zł'}"></span>
+        </label>
+        <br>
+    </div>
 
-        <option th:each="product : ${products}"
-                th:value="${product.id}"
-                th:text="${product.nazwa}">
-        </option>
+    <br>
 
-    </select>
-
-    <br><br>
-
-    <button type="submit">
-        Dodaj zamówienie
-    </button>
+    <button type="submit">Dodaj zamówienie</button>
 
 </form>
 
 <br><br>
 
-<a href="/">
-    Strona główna
-</a>
+<a href="/">Strona główna</a>
 
 </body>
 </html>
