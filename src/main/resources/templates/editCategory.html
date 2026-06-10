@@ -1,38 +1,40 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6">
 <head>
     <title>Edytuj kategorię</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<div class="layout">
 
-<h1>Edytuj kategorię</h1>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-<form th:action="@{/categories/update}"
-      th:object="${category}"
-      method="post">
+    <div class="main">
+        <div class="topbar">
+            <span class="topbar-title">Edytuj kategorię</span>
+            <span class="topbar-user" sec:authentication="name"></span>
+        </div>
 
-    <input type="hidden"
-           th:field="*{id}">
+        <div class="content">
+            <div class="form-card">
+                <form th:action="@{/categories/update}" th:object="${category}" method="post">
+                    <input type="hidden" th:field="*{id}">
 
-    Nazwa:
+                    <div class="form-group">
+                        <label>Nazwa</label>
+                        <input type="text" th:field="*{nazwa}">
+                    </div>
 
-    <input type="text"
-           th:field="*{nazwa}">
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+                        <a href="/categories" class="btn btn-secondary">Anuluj</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-    <br><br>
-
-    <button type="submit">
-        Zapisz
-    </button>
-
-</form>
-
-<br><br>
-
-<a href="/">
-    Strona główna
-</a>
-
+</div>
 </body>
 </html>

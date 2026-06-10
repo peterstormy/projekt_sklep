@@ -4,166 +4,121 @@
 <head>
     <title>Produkty</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
-    <style>
-        th a { text-decoration: none; color: inherit; }
-        th a:hover { text-decoration: underline; }
-    </style>
 </head>
 <body>
+<div class="layout">
 
-<h1>Lista produktów</h1>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-<div sec:authorize="hasAnyRole('ADMIN', 'EMPLOYEE')">
-    <a href="/products/add">Dodaj produkt</a>
-    <br><br>
+    <div class="main">
+        <div class="topbar">
+            <span class="topbar-title">Produkty</span>
+            <span class="topbar-user" sec:authentication="name"></span>
+        </div>
+
+        <div class="content">
+
+            <div class="page-header">
+                <h2>Lista produktów</h2>
+                <div sec:authorize="hasAnyRole('ADMIN','EMPLOYEE')">
+                    <a href="/products/add" class="btn btn-primary">+ Dodaj produkt</a>
+                </div>
+            </div>
+
+            <!-- Filtry -->
+            <div class="filters">
+                <span class="filter-label">Data od:</span>
+                <form action="/products" method="get" style="display:flex;gap:8px;align-items:center;">
+                    <input type="date" name="data" th:value="${data}" style="width:auto;">
+                    <input type="hidden" name="categoryId" th:if="${categoryId != null}" th:value="${categoryId}">
+                    <button type="submit" class="btn btn-secondary btn-sm">Filtruj</button>
+                    <a th:if="${data != null}" href="/products" class="btn btn-secondary btn-sm">✕</a>
+                </form>
+
+                <span class="filter-label" style="margin-left:8px;">Kategoria:</span>
+                <div class="pills">
+                    <a href="/products" class="pill" th:classappend="${categoryId == null} ? 'active' : ''">Wszystkie</a>
+                    <a th:each="category : ${categories}"
+                       th:href="@{/products(categoryId=${category.id})}"
+                       th:text="${category.nazwa}"
+                       class="pill"
+                       th:classappend="${categoryId == category.id} ? 'active' : ''">
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tabela -->
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>
+                            <a th:href="${sortField == 'id' && sortDir == 'asc'} ? @{/products(sortField='id',sortDir='desc',categoryId=${categoryId},data=${data})} : (${sortField == 'id' && sortDir == 'desc'} ? @{/products(sortField='id',sortDir='asc',categoryId=${categoryId},data=${data})} : @{/products(sortField='id',sortDir='asc',categoryId=${categoryId},data=${data})})">
+                                ID
+                                <span th:if="${sortField == 'id' && sortDir == 'asc'}">↑</span>
+                                <span th:if="${sortField == 'id' && sortDir == 'desc'}">↓</span>
+                            </a>
+                        </th>
+                        <th>
+                            <a th:href="${sortField == 'nazwa' && sortDir == 'asc'} ? @{/products(sortField='nazwa',sortDir='desc',categoryId=${categoryId},data=${data})} : (${sortField == 'nazwa' && sortDir == 'desc'} ? @{/products(sortField='id',sortDir='asc',categoryId=${categoryId},data=${data})} : @{/products(sortField='nazwa',sortDir='asc',categoryId=${categoryId},data=${data})})">
+                                Nazwa
+                                <span th:if="${sortField == 'nazwa' && sortDir == 'asc'}">↑</span>
+                                <span th:if="${sortField == 'nazwa' && sortDir == 'desc'}">↓</span>
+                            </a>
+                        </th>
+                        <th>
+                            <a th:href="${sortField == 'producent' && sortDir == 'asc'} ? @{/products(sortField='producent',sortDir='desc',categoryId=${categoryId},data=${data})} : (${sortField == 'producent' && sortDir == 'desc'} ? @{/products(sortField='id',sortDir='asc',categoryId=${categoryId},data=${data})} : @{/products(sortField='producent',sortDir='asc',categoryId=${categoryId},data=${data})})">
+                                Producent
+                                <span th:if="${sortField == 'producent' && sortDir == 'asc'}">↑</span>
+                                <span th:if="${sortField == 'producent' && sortDir == 'desc'}">↓</span>
+                            </a>
+                        </th>
+                        <th>
+                            <a th:href="${sortField == 'cena' && sortDir == 'asc'} ? @{/products(sortField='cena',sortDir='desc',categoryId=${categoryId},data=${data})} : (${sortField == 'cena' && sortDir == 'desc'} ? @{/products(sortField='id',sortDir='asc',categoryId=${categoryId},data=${data})} : @{/products(sortField='cena',sortDir='asc',categoryId=${categoryId},data=${data})})">
+                                Cena
+                                <span th:if="${sortField == 'cena' && sortDir == 'asc'}">↑</span>
+                                <span th:if="${sortField == 'cena' && sortDir == 'desc'}">↓</span>
+                            </a>
+                        </th>
+                        <th>
+                            <a th:href="${sortField == 'ilosc' && sortDir == 'asc'} ? @{/products(sortField='ilosc',sortDir='desc',categoryId=${categoryId},data=${data})} : (${sortField == 'ilosc' && sortDir == 'desc'} ? @{/products(sortField='id',sortDir='asc',categoryId=${categoryId},data=${data})} : @{/products(sortField='ilosc',sortDir='asc',categoryId=${categoryId},data=${data})})">
+                                Ilość
+                                <span th:if="${sortField == 'ilosc' && sortDir == 'asc'}">↑</span>
+                                <span th:if="${sortField == 'ilosc' && sortDir == 'desc'}">↓</span>
+                            </a>
+                        </th>
+                        <th>
+                            <a th:href="${sortField == 'dataDodania' && sortDir == 'asc'} ? @{/products(sortField='dataDodania',sortDir='desc',categoryId=${categoryId},data=${data})} : (${sortField == 'dataDodania' && sortDir == 'desc'} ? @{/products(sortField='id',sortDir='asc',categoryId=${categoryId},data=${data})} : @{/products(sortField='dataDodania',sortDir='asc',categoryId=${categoryId},data=${data})})">
+                                Data dodania
+                                <span th:if="${sortField == 'dataDodania' && sortDir == 'asc'}">↑</span>
+                                <span th:if="${sortField == 'dataDodania' && sortDir == 'desc'}">↓</span>
+                            </a>
+                        </th>
+                        <th>Kategoria</th>
+                        <th sec:authorize="hasAnyRole('ADMIN','EMPLOYEE')">Akcje</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="product : ${products}">
+                        <td th:text="${product.id}"></td>
+                        <td><a th:href="@{/products/{id}(id=${product.id})}" th:text="${product.nazwa}"></a></td>
+                        <td th:text="${product.producent}"></td>
+                        <td th:text="${product.cena + ' zł'}"></td>
+                        <td th:text="${product.ilosc}"></td>
+                        <td th:text="${product.dataDodania}"></td>
+                        <td th:text="${product.category != null ? product.category.nazwa : '—'}"></td>
+                        <td sec:authorize="hasAnyRole('ADMIN','EMPLOYEE')">
+                            <a th:href="@{/products/edit/{id}(id=${product.id})}" class="btn btn-secondary btn-sm">Edytuj</a>
+                            <a th:href="@{/products/delete/{id}(id=${product.id})}" class="btn btn-danger btn-sm">Usuń</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
 </div>
-
-<h3>Filtr daty (od)</h3>
-
-<form action="/products" method="get">
-    <input type="date" name="data">
-    <input type="hidden" name="categoryId" th:if="${categoryId != null}" th:value="${categoryId}">
-    <button type="submit">Filtruj</button>
-    <a th:if="${data != null}" href="/products">Wyczyść</a>
-</form>
-
-<br>
-
-<h3>Filtr kategorii</h3>
-
-<a href="/products">Wszystkie</a>
-<br><br>
-
-<div th:each="category : ${categories}">
-    <a th:href="@{/products(categoryId=${category.id})}"
-       th:text="${category.nazwa}">
-    </a>
-    <br>
-</div>
-
-<br><br>
-
-<table border="1">
-
-    <tr>
-        <!-- ID -->
-        <th>
-            <a th:href="${sortField == 'id' && sortDir == 'asc'}
-                        ? @{/products(sortField='id',sortDir='desc',categoryId=${categoryId},data=${data})}
-                        : (${sortField == 'id' && sortDir == 'desc'}
-                           ? @{/products(sortField='id',sortDir='asc',categoryId=${categoryId},data=${data})}
-                           : @{/products(sortField='id',sortDir='asc',categoryId=${categoryId},data=${data})})">
-                ID
-                <span th:if="${sortField == 'id' && sortDir == 'asc'}">↑</span>
-                <span th:if="${sortField == 'id' && sortDir == 'desc'}">↓</span>
-            </a>
-        </th>
-
-        <!-- Nazwa -->
-        <th>
-            <a th:href="${sortField == 'nazwa' && sortDir == 'asc'}
-                        ? @{/products(sortField='nazwa',sortDir='desc',categoryId=${categoryId},data=${data})}
-                        : (${sortField == 'nazwa' && sortDir == 'desc'}
-                           ? @{/products(sortField='id',sortDir='asc',categoryId=${categoryId},data=${data})}
-                           : @{/products(sortField='nazwa',sortDir='asc',categoryId=${categoryId},data=${data})})">
-                Nazwa
-                <span th:if="${sortField == 'nazwa' && sortDir == 'asc'}">↑</span>
-                <span th:if="${sortField == 'nazwa' && sortDir == 'desc'}">↓</span>
-            </a>
-        </th>
-
-        <!-- Producent -->
-        <th>
-            <a th:href="${sortField == 'producent' && sortDir == 'asc'}
-                        ? @{/products(sortField='producent',sortDir='desc',categoryId=${categoryId},data=${data})}
-                        : (${sortField == 'producent' && sortDir == 'desc'}
-                           ? @{/products(sortField='id',sortDir='asc',categoryId=${categoryId},data=${data})}
-                           : @{/products(sortField='producent',sortDir='asc',categoryId=${categoryId},data=${data})})">
-                Producent
-                <span th:if="${sortField == 'producent' && sortDir == 'asc'}">↑</span>
-                <span th:if="${sortField == 'producent' && sortDir == 'desc'}">↓</span>
-            </a>
-        </th>
-
-        <!-- Cena -->
-        <th>
-            <a th:href="${sortField == 'cena' && sortDir == 'asc'}
-                        ? @{/products(sortField='cena',sortDir='desc',categoryId=${categoryId},data=${data})}
-                        : (${sortField == 'cena' && sortDir == 'desc'}
-                           ? @{/products(sortField='id',sortDir='asc',categoryId=${categoryId},data=${data})}
-                           : @{/products(sortField='cena',sortDir='asc',categoryId=${categoryId},data=${data})})">
-                Cena
-                <span th:if="${sortField == 'cena' && sortDir == 'asc'}">↑</span>
-                <span th:if="${sortField == 'cena' && sortDir == 'desc'}">↓</span>
-            </a>
-        </th>
-
-        <!-- Ilość -->
-        <th>
-            <a th:href="${sortField == 'ilosc' && sortDir == 'asc'}
-                        ? @{/products(sortField='ilosc',sortDir='desc',categoryId=${categoryId},data=${data})}
-                        : (${sortField == 'ilosc' && sortDir == 'desc'}
-                           ? @{/products(sortField='id',sortDir='asc',categoryId=${categoryId},data=${data})}
-                           : @{/products(sortField='ilosc',sortDir='asc',categoryId=${categoryId},data=${data})})">
-                Ilość
-                <span th:if="${sortField == 'ilosc' && sortDir == 'asc'}">↑</span>
-                <span th:if="${sortField == 'ilosc' && sortDir == 'desc'}">↓</span>
-            </a>
-        </th>
-
-        <!-- Data dodania -->
-        <th>
-            <a th:href="${sortField == 'dataDodania' && sortDir == 'asc'}
-                        ? @{/products(sortField='dataDodania',sortDir='desc',categoryId=${categoryId},data=${data})}
-                        : (${sortField == 'dataDodania' && sortDir == 'desc'}
-                           ? @{/products(sortField='id',sortDir='asc',categoryId=${categoryId},data=${data})}
-                           : @{/products(sortField='dataDodania',sortDir='asc',categoryId=${categoryId},data=${data})})">
-                Data dodania
-                <span th:if="${sortField == 'dataDodania' && sortDir == 'asc'}">↑</span>
-                <span th:if="${sortField == 'dataDodania' && sortDir == 'desc'}">↓</span>
-            </a>
-        </th>
-
-        <th>Kategoria</th>
-        <th sec:authorize="hasAnyRole('ADMIN', 'EMPLOYEE')">Edytuj</th>
-        <th sec:authorize="hasAnyRole('ADMIN', 'EMPLOYEE')">Usuń</th>
-    </tr>
-
-    <tr th:each="product : ${products}">
-
-        <td th:text="${product.id}"></td>
-
-        <td>
-            <a th:href="@{/products/{id}(id=${product.id})}"
-               th:text="${product.nazwa}">
-            </a>
-        </td>
-
-        <td th:text="${product.producent}"></td>
-
-        <td th:text="${product.cena}"></td>
-
-        <td th:text="${product.ilosc}"></td>
-
-        <td th:text="${product.dataDodania}"></td>
-
-        <td th:text="${product.category != null ? product.category.nazwa : 'Brak kategorii'}"></td>
-
-        <td sec:authorize="hasAnyRole('ADMIN', 'EMPLOYEE')">
-            <a th:href="@{/products/edit/{id}(id=${product.id})}">Edytuj</a>
-        </td>
-
-        <td sec:authorize="hasAnyRole('ADMIN', 'EMPLOYEE')">
-            <a th:href="@{/products/delete/{id}(id=${product.id})}">Usuń</a>
-        </td>
-
-    </tr>
-
-</table>
-
-<br><br>
-
-<a href="/">Strona główna</a>
-
 </body>
 </html>

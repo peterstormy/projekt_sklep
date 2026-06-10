@@ -1,54 +1,52 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6">
 <head>
     <title>Zmiana roli</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<div class="layout">
 
-<h1>Zmień rolę użytkownika</h1>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-<form th:action="@{/users/updateRole}"
-      th:object="${user}"
-      method="post">
+    <div class="main">
+        <div class="topbar">
+            <span class="topbar-title">Zmiana roli użytkownika</span>
+            <span class="topbar-user" sec:authentication="name"></span>
+        </div>
 
-    <input type="hidden"
-           th:field="*{id}">
+        <div class="content">
+            <div class="form-card">
+                <form th:action="@{/users/updateRole}" th:object="${user}" method="post">
+                    <input type="hidden" th:field="*{id}">
 
-    <p>
-        <b th:text="${user.imie}"></b>
-        <b th:text="${user.nazwisko}"></b>
-    </p>
+                    <div class="form-group">
+                        <label>Użytkownik</label>
+                        <div style="font-size:15px;font-weight:600;color:#18181b;padding:8px 0;">
+                            <span th:text="${user.imie}"></span> <span th:text="${user.nazwisko}"></span>
+                            <span style="font-size:13px;color:#71717a;margin-left:8px;" th:text="'(' + ${user.login} + ')'"></span>
+                        </div>
+                    </div>
 
-    <select th:field="*{rola}">
+                    <div class="form-group">
+                        <label>Rola</label>
+                        <select th:field="*{rola}">
+                            <option value="ADMIN">ADMIN</option>
+                            <option value="EMPLOYEE">EMPLOYEE</option>
+                            <option value="USER">USER</option>
+                        </select>
+                    </div>
 
-        <option value="ADMIN">
-            ADMIN
-        </option>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+                        <a href="/users" class="btn btn-secondary">Anuluj</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-        <option value="USER">
-            USER
-        </option>
-
-        <option value="EMPLOYEE">
-            EMPLOYEE
-        </option>
-
-    </select>
-
-    <br><br>
-
-    <button type="submit">
-        Zapisz
-    </button>
-
-</form>
-
-<br><br>
-
-<a href="/users">
-    Powrót
-</a>
-
+</div>
 </body>
 </html>

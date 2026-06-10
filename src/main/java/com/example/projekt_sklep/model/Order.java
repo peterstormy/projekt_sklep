@@ -4,10 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,8 +24,8 @@ public class Order {
 
     private String status;
 
-    @ManyToMany
-    private List<Product> products;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<OrderItem> items = new ArrayList<>();
 
     @ManyToOne
     private User user;

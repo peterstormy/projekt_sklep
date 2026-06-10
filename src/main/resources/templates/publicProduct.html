@@ -1,75 +1,58 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Udostępniony produkt</title>
-    <link rel="stylesheet"
-          th:href="@{/css/style.css}">
+    <title th:text="${product.nazwa}">Produkt</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<div class="public-page">
+    <div class="public-card">
 
-<h1>Udostępniony produkt</h1>
+        <div style="margin-bottom:20px;">
+            <div style="font-size:12px;font-weight:600;letter-spacing:0.05em;color:#e07b39;text-transform:uppercase;margin-bottom:4px;">Podgląd publiczny</div>
+            <h1 style="font-size:22px;font-weight:700;color:#18181b;margin:0;" th:text="${product.nazwa}"></h1>
+            <div style="margin-top:6px;font-size:13px;color:#71717a;">
+                <span th:text="${product.producent}"></span>
+                <span th:if="${product.category != null}"> · <span th:text="${product.category.nazwa}"></span></span>
+            </div>
+        </div>
 
-<p>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:16px;background:#f4f4f5;border-radius:8px;margin-bottom:20px;">
+            <div>
+                <div style="font-size:12px;color:#71717a;margin-bottom:2px;">Cena</div>
+                <div style="font-size:24px;font-weight:700;color:#e07b39;" th:text="${product.cena + ' zł'}"></div>
+            </div>
+            <div style="text-align:right;">
+                <div style="font-size:12px;color:#71717a;margin-bottom:2px;">Dostępność</div>
+                <span th:if="${product.ilosc > 0}" class="stock-ok" th:text="${product.ilosc + ' szt.'}"></span>
+                <span th:if="${product.ilosc == 0}" class="stock-out">Brak w magazynie</span>
+            </div>
+        </div>
 
-    <b>Nazwa:</b>
+        <div style="margin-bottom:20px;">
+            <div style="font-size:12px;font-weight:600;color:#71717a;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Opis</div>
+            <div style="font-size:14px;color:#3f3f46;line-height:1.6;" th:text="${product.opis}"></div>
+        </div>
 
-    <span th:text="${product.nazwa}"></span>
+        <div th:if="${not #lists.isEmpty(product.specyfikacja)}" style="margin-bottom:24px;">
+            <div style="font-size:12px;font-weight:600;color:#71717a;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px;">Specyfikacja techniczna</div>
+            <table class="spec-table">
+                <tbody>
+                <tr th:each="spec : ${product.specyfikacja}">
+                    <td th:text="${spec.klucz}"></td>
+                    <td th:text="${spec.wartosc}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-</p>
+        <div style="border-top:1px solid #e4e4e7;padding-top:16px;text-align:center;">
+            <p style="font-size:13px;color:#71717a;margin-bottom:12px;">Zaloguj się, aby zobaczyć więcej produktów i złożyć zamówienie.</p>
+            <a href="/login" class="btn btn-primary">Zaloguj się</a>
+            <a href="/register" class="btn btn-secondary" style="margin-left:8px;">Zarejestruj się</a>
+        </div>
 
-<p>
-
-    <b>Opis:</b>
-
-    <span th:text="${product.opis}"></span>
-
-</p>
-
-<p>
-
-    <b>Producent:</b>
-
-    <span th:text="${product.producent}"></span>
-
-</p>
-
-<p>
-
-    <b>Cena:</b>
-
-    <span th:text="${product.cena}"></span>
-
-</p>
-
-<p>
-
-    <b>Ilość:</b>
-
-    <span th:text="${product.ilosc}"></span>
-
-</p>
-
-<p>
-
-    <b>Data dodania:</b>
-
-    <span th:text="${product.dataDodania}"></span>
-
-</p>
-
-<p>
-
-    <b>Kategoria:</b>
-
-    <span th:text="${product.category != null ? product.category.nazwa : 'Brak'}"></span>
-
-</p>
-
-<br><br>
-
-<a href="/login">
-    Zaloguj się
-</a>
-
+    </div>
+</div>
 </body>
 </html>

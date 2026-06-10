@@ -1,39 +1,40 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6">
 <head>
     <title>Dodaj kategorię</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<div class="layout">
 
-<h1>Dodaj kategorię</h1>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-<form th:action="@{/categories/save}"
-      th:object="${category}"
-      method="post">
+    <div class="main">
+        <div class="topbar">
+            <span class="topbar-title">Dodaj kategorię</span>
+            <span class="topbar-user" sec:authentication="name"></span>
+        </div>
 
-    Nazwa:
+        <div class="content">
+            <div class="form-card">
+                <form th:action="@{/categories/save}" th:object="${category}" method="post">
 
-    <input type="text"
-           th:field="*{nazwa}">
+                    <div class="form-group">
+                        <label>Nazwa</label>
+                        <input type="text" th:field="*{nazwa}" placeholder="Nazwa kategorii">
+                        <div class="form-error" th:if="${#fields.hasErrors('nazwa')}" th:errors="*{nazwa}"></div>
+                    </div>
 
-    <span th:if="${#fields.hasErrors('nazwa')}"
-          th:errors="*{nazwa}">
-    </span>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Dodaj kategorię</button>
+                        <a href="/categories" class="btn btn-secondary">Anuluj</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-    <br><br>
-
-    <button type="submit">
-        Dodaj
-    </button>
-
-</form>
-
-<br><br>
-
-<a href="/">
-    Strona główna
-</a>
-
+</div>
 </body>
 </html>

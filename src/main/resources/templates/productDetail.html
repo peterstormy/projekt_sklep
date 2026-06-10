@@ -6,64 +6,80 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<div class="layout">
 
-<h1 th:text="${product.nazwa}"></h1>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-<p>
-    <b>Producent:</b>
-    <span th:text="${product.producent}"></span>
-</p>
+    <div class="main">
+        <div class="topbar">
+            <span class="topbar-title" th:text="${product.nazwa}">Produkt</span>
+            <span class="topbar-user" sec:authentication="name"></span>
+        </div>
 
-<p>
-    <b>Kategoria:</b>
-    <span th:text="${product.category != null ? product.category.nazwa : 'Brak'}"></span>
-</p>
+        <div class="content">
 
-<p>
-    <b>Opis:</b>
-    <span th:text="${product.opis}"></span>
-</p>
+            <div style="margin-bottom:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <a href="/products" class="btn btn-secondary btn-sm">← Powrót do listy</a>
+                <span sec:authorize="hasAnyRole('ADMIN','EMPLOYEE')">
+                    <a th:href="@{/products/edit/{id}(id=${product.id})}" class="btn btn-secondary btn-sm">Edytuj</a>
+                    <a th:href="@{/products/delete/{id}(id=${product.id})}" class="btn btn-danger btn-sm">Usuń</a>
+                </span>
+                <span sec:authorize="hasRole('USER')">
+                    <form th:action="@{/cart/add/{id}(id=${product.id})}" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-primary btn-sm" th:disabled="${product.ilosc == 0}">
+                            &#128717; Dodaj do koszyka
+                        </button>
+                    </form>
+                </span>
+            </div>
 
-<p>
-    <b>Cena:</b>
-    <span th:text="${product.cena + ' zł'}"></span>
-</p>
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
+                    <div>
+                        <h2 style="font-size:20px;margin-bottom:6px;" th:text="${product.nazwa}"></h2>
+                        <span style="font-size:13px;color:#71717a;" th:text="${product.producent}"></span>
+                        &nbsp;·&nbsp;
+                        <span style="font-size:13px;color:#71717a;" th:text="${product.category != null ? product.category.nazwa : 'Brak kategorii'}"></span>
+                    </div>
+                    <span class="price-tag" th:text="${product.cena + ' zł'}"></span>
+                </div>
 
-<p>
-    <b>Dostępność:</b>
-    <span th:text="${product.ilosc > 0 ? product.ilosc + ' szt.' : 'Brak w magazynie'}"></span>
-</p>
+                <div class="detail-grid">
+                    <div class="detail-field">
+                        <div class="label">Opis</div>
+                        <div class="value" th:text="${product.opis}"></div>
+                    </div>
+                    <div class="detail-field">
+                        <div class="label">Dostępność</div>
+                        <div class="value">
+                            <span th:if="${product.ilosc > 0}" class="stock-ok" th:text="${product.ilosc + ' szt.'}"></span>
+                            <span th:if="${product.ilosc == 0}" class="stock-out">Brak w magazynie</span>
+                        </div>
+                    </div>
+                    <div class="detail-field">
+                        <div class="label">Data dodania</div>
+                        <div class="value" th:text="${product.dataDodania}"></div>
+                    </div>
+                </div>
+            </div>
 
-<p>
-    <b>Data dodania:</b>
-    <span th:text="${product.dataDodania}"></span>
-</p>
+            <div th:if="${not #lists.isEmpty(product.specyfikacja)}" class="card">
+                <h3 style="font-size:15px;font-weight:600;margin-bottom:14px;">Specyfikacja techniczna</h3>
+                <div class="table-wrapper">
+                    <table class="spec-table">
+                        <tbody>
+                        <tr th:each="spec : ${product.specyfikacja}">
+                            <td th:text="${spec.klucz}"></td>
+                            <td th:text="${spec.wartosc}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-<div th:if="${not #lists.isEmpty(product.specyfikacja)}">
-    <br>
-    <h3>Specyfikacja</h3>
-    <table border="1">
-        <tr th:each="spec : ${product.specyfikacja}">
-            <td><b th:text="${spec.klucz}"></b></td>
-            <td th:text="${spec.wartosc}"></td>
-        </tr>
-    </table>
+        </div>
+    </div>
+
 </div>
-
-<br>
-
-<div sec:authorize="hasAnyRole('ADMIN', 'EMPLOYEE')">
-    <a th:href="@{/products/edit/{id}(id=${product.id})}">Edytuj</a>
-    &nbsp;|&nbsp;
-    <a th:href="@{/products/delete/{id}(id=${product.id})}">Usuń</a>
-    <br><br>
-</div>
-
-<a href="/products">Powrót do listy produktów</a>
-
-<br><br>
-
-<a href="/">Strona główna</a>
-
 </body>
 </html>

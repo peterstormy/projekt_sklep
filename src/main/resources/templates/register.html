@@ -1,81 +1,51 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-
     <title>Rejestracja</title>
-
-    <link rel="stylesheet"
-          th:href="@{/css/style.css}">
-
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<div class="auth-page">
+    <div class="auth-card">
+        <h1>Rejestracja</h1>
+        <p class="auth-sub">Utwórz nowe konto</p>
 
-<center>
+        <form th:action="@{/register/save}" th:object="${user}" method="post">
 
-    <h1>Rejestracja</h1>
+            <div class="form-group">
+                <label>Imię</label>
+                <input type="text" th:field="*{imie}" placeholder="Wpisz imię">
+            </div>
 
-    <form th:action="@{/register/save}"
-          th:object="${user}"
-          method="post">
+            <div class="form-group">
+                <label>Nazwisko</label>
+                <input type="text" th:field="*{nazwisko}" placeholder="Wpisz nazwisko">
+            </div>
 
-        Imię
+            <div class="form-group">
+                <label>Login</label>
+                <input type="text" th:field="*{login}" placeholder="Wpisz login">
+            </div>
 
-        <br><br>
+            <div class="form-group">
+                <label>Hasło</label>
+                <input type="password" th:field="*{haslo}" placeholder="Wpisz hasło">
+            </div>
 
-        <input type="text"
-               th:field="*{imie}">
+            <div class="form-group">
+                <label>Wiek</label>
+                <input type="number" th:field="*{wiek}" placeholder="Wpisz wiek" min="1" max="120">
+            </div>
 
-        <br><br>
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">
+                Zarejestruj się
+            </button>
+        </form>
 
-        Nazwisko
-
-        <br><br>
-
-        <input type="text"
-               th:field="*{nazwisko}">
-
-        <br><br>
-
-        Login
-
-        <br><br>
-
-        <input type="text"
-               th:field="*{login}">
-
-        <br><br>
-
-        Hasło
-
-        <br><br>
-
-        <input type="password"
-               th:field="*{haslo}">
-
-        <br><br>
-
-        Wiek
-
-        <br><br>
-
-        <input type="number"
-               th:field="*{wiek}">
-
-        <br><br>
-
-        <button type="submit">
-            Zarejestruj
-        </button>
-
-    </form>
-
-    <br><br>
-
-    <a href="/login">
-        Powrót do logowania
-    </a>
-
-</center>
-
+        <div class="auth-footer">
+            <a href="/login">Masz już konto? Zaloguj się</a>
+        </div>
+    </div>
+</div>
 </body>
 </html>

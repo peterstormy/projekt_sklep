@@ -61,18 +61,20 @@ Aplikacja dostępna pod: `http://localhost:8080`
 
 | Element | Status |
 |---|---|
-| Kontrolery MVC (7 kontrolerów) | ✅ |
-| Modele JPA: User, Category, Product, ProductSpec, Order | ✅ |
+| Kontrolery MVC (9 kontrolerów) | ✅ |
+| Modele JPA: User, Category, Product, ProductSpec, Order, OrderItem | ✅ |
 | Widoki Thymeleaf z formularzami i walidacją | ✅ |
 | Spring Security z bazą danych, 3 role | ✅ |
-| Sesja — zapamiętanie kryterium i kierunku sortowania | ✅ |
+| Sesja — koszyk zakupowy przechowywany w `HttpSession` | ✅ |
 
 ### Funkcjonalności
 
 | Element | Status |
 |---|---|
 | Pełny CRUD — Product, Category, Order | ✅ |
-| Walidacja formularza produktu (6 reguł `@NotBlank`, `@Size`, `@DecimalMin`, `@Min`) | ✅ |
+| Walidacja formularza produktu (`@NotBlank`, `@Size`, `@DecimalMin`, `@Min`) | ✅ |
+| Walidacja pola wiek w rejestracji (`@Min(1)` + `min` w HTML) | ✅ |
+| Walidacja ceny produktu (`min="0.01"` w HTML + `@DecimalMin` w modelu) | ✅ |
 | Strona szczegółów produktu z tabelą specyfikacji technicznej | ✅ |
 | 20 produktów w 7 kategoriach z pełnymi specyfikacjami | ✅ |
 | Sortowanie po kolumnach (klikalne nagłówki, strzałki, 3-klik reset) | ✅ |
@@ -82,6 +84,14 @@ Aplikacja dostępna pod: `http://localhost:8080`
 | Logowanie i rejestracja (Spring Security) | ✅ |
 | Publiczny link do produktu (dostępny bez logowania) | ✅ |
 | Lista użytkowników + zarządzanie rolami (tylko ADMIN) | ✅ |
+| **Koszyk zakupowy** (sesja: dodaj, +/−, usuń, złóż zamówienie) | ✅ |
+| **Odejmowanie stanu magazynowego** po złożeniu zamówienia | ✅ |
+| **OrderItem** — pozycje zamówienia z ilością (zamiast ManyToMany) | ✅ |
+| **USER widzi tylko swoje zamówienia** (admin widzi wszystkie) | ✅ |
+| **Podgląd zamówienia** `/orders/{id}` z tabelą produktów i sumą | ✅ |
+| **Edycja zamówienia** — +/− ilości, dodaj/usuń produkty z wyszukiwarką | ✅ |
+| **Wyszukiwanie zamówień po kliencie** (panel admina) | ✅ |
+| **Role-aware UI** — USER widzi "Sklep", ADMIN/EMPLOYEE "System zarządzania" | ✅ |
 
 ---
 
@@ -100,11 +110,17 @@ Aplikacja dostępna pod: `http://localhost:8080`
 
 | Co | Problem |
 |---|---|
-| Walidacja `User` | Brak `@NotBlank`, `@Size`, `@Min` na polach + brak `@Valid` w `RegisterController` |
+| Walidacja `User` | Brak `@NotBlank`, `@Size` na polach imie/nazwisko/login + brak `@Valid` w `RegisterController` |
 | Walidacja `Order` | Brak adnotacji walidacyjnych + brak `@Valid` w `saveOrder()` |
 | Filtr kategorii | Powinien być posortowany od najpopularniejszej (GROUP BY + COUNT) |
 | Rola EMPLOYEE | Brak dedykowanych reguł w `SecurityConfig` |
 | WCAG 2.1 | Brak `lang="pl"`, `<label for>`, znaczników semantycznych |
+
+### UI — dopracowanie
+
+| Co | Opis |
+|---|---|
+| Dopracowanie UI | Spójność widoków, drobne poprawki layoutu na pozostałych stronach |
 
 ### SBD — dokumentacja
 
@@ -123,6 +139,7 @@ src/main/java/com/example/projekt_sklep/
 │   ├── PasswordConfig.java
 │   └── SecurityConfig.java
 ├── controller/
+│   ├── CartController.java      # Koszyk zakupowy (sesja)
 │   ├── CategoryController.java
 │   ├── HomeController.java
 │   ├── LoginController.java
@@ -133,11 +150,13 @@ src/main/java/com/example/projekt_sklep/
 ├── model/
 │   ├── Category.java
 │   ├── Order.java
+│   ├── OrderItem.java           # Pozycja zamówienia (produkt + ilość)
 │   ├── Product.java
 │   ├── ProductSpec.java         # Specyfikacje techniczne produktu (klucz/wartość)
 │   └── User.java
 ├── repository/
 │   ├── CategoryRepository.java
+│   ├── OrderItemRepository.java
 │   ├── OrderRepository.java
 │   ├── ProductRepository.java
 │   ├── ProductSpecRepository.java

@@ -5,56 +5,40 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<div class="auth-page">
+    <div class="auth-card">
+        <h1>&#128187; Sklep</h1>
+        <p class="auth-sub">Zaloguj się do systemu zarządzania</p>
 
-<center>
+        <form th:action="@{/login}" method="post">
 
-    <h1>Logowanie</h1>
+            <div class="form-group">
+                <label>Login</label>
+                <input type="text" name="username" placeholder="Wpisz login">
+            </div>
 
-    <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label>Hasło</label>
+                <input type="password" name="password" placeholder="Wpisz hasło">
+            </div>
 
-        Login:
+            <div th:if="${param.error}" style="color:#dc2626;font-size:13px;margin-bottom:12px;">
+                Nieprawidłowy login lub hasło.
+            </div>
 
-        <br>
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">
+                Zaloguj się
+            </button>
+        </form>
 
-        <input type="text" name="username">
+        <div class="auth-footer">
+            <a href="/register">Nie masz konta? Zarejestruj się</a>
+        </div>
 
-        <br><br>
-
-        Hasło:
-
-        <br>
-
-        <input type="password" name="password">
-
-        <br><br>
-
-        <button type="submit">
-            Zaloguj
-        </button>
-
-    </form>
-
-    <br><br>
-
-    <a href="/register">
-        Nie masz konta? Zarejestruj się
-    </a>
-
-    <br><br>
-
-    <p>
-        admin / admin
-    </p>
-
-    <p>
-        user / user
-    </p>
-
-    <p>
-        employee / employee
-    </p>
-
-</center>
-
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid #f4f4f5;font-size:12px;color:#a1a1aa;">
+            Konta testowe: admin/admin &nbsp;·&nbsp; user/user &nbsp;·&nbsp; employee/employee
+        </div>
+    </div>
+</div>
 </body>
 </html>

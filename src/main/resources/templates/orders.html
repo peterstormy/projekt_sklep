@@ -1,65 +1,84 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6">
 <head>
     <title>Zamówienia</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<div class="layout">
 
-<h1>Lista zamówień</h1>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-<a href="/orders/add">
-    Dodaj zamówienie
-</a>
+    <div class="main">
+        <div class="topbar">
+            <span class="topbar-title">Zamówienia</span>
+            <span class="topbar-user" sec:authentication="name"></span>
+        </div>
 
-<br><br>
+        <div class="content">
 
-<table border="1">
+            <div class="page-header">
+                <h2>Lista zamówień</h2>
+                <div sec:authorize="hasAnyRole('ADMIN','EMPLOYEE')">
+                    <a href="/orders/add" class="btn btn-primary">+ Dodaj zamówienie</a>
+                </div>
+            </div>
 
-    <tr>
-        <th>ID</th>
-        <th>Data</th>
-        <th>Status</th>
-        <th>Produkty</th>
-        <th>Edytuj</th>
-        <th>Usuń</th>
-    </tr>
+            <!-- Wyszukiwarka klientów — tylko dla admina -->
+            <div sec:authorize="hasAnyRole('ADMIN','EMPLOYEE')" class="filters" style="margin-bottom:14px;">
+                <span class="filter-label">Szukaj klienta:</span>
+                <form th:action="@{/orders}" method="get" style="display:flex;gap:8px;align-items:center;">
+                    <input type="text" name="search" th:value="${search}"
+                           placeholder="Imię, nazwisko lub login..." style="width:220px;">
+                    <button type="submit" class="btn btn-secondary btn-sm">Szukaj</button>
+                    <a th:if="${search != null}" href="/orders" class="btn btn-secondary btn-sm">✕ Wyczyść</a>
+                </form>
+            </div>
 
-    <tr th:each="order : ${orders}">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Data</th>
+                        <th>Status</th>
+                        <th th:if="${isAdmin}">Klient</th>
+                        <th>Akcje</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="order : ${orders}">
+                        <td th:text="${order.id}"></td>
+                        <td th:text="${order.dataZamowienia}"></td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${order.status == 'NOWE'} ? 'badge-new' : (${order.status == 'W_REALIZACJI'} ? 'badge-progress' : 'badge-done')"
+                                  th:text="${order.status}">
+                            </span>
+                        </td>
+                        <td th:if="${isAdmin}">
+                            <span th:if="${order.user == null}" style="color:#a1a1aa;">—</span>
+                            <a th:if="${order.user != null}"
+                               th:href="@{/users/editRole/{id}(id=${order.user.id})}"
+                               th:text="${order.user.imie + ' ' + order.user.nazwisko}">
+                            </a>
+                        </td>
+                        <td style="display:flex;gap:6px;flex-wrap:wrap;">
+                            <a th:href="@{/orders/{id}(id=${order.id})}" class="btn btn-secondary btn-sm">Podgląd</a>
+                            <span sec:authorize="hasAnyRole('ADMIN','EMPLOYEE')">
+                                <a th:href="@{/orders/edit/{id}(id=${order.id})}" class="btn btn-secondary btn-sm">Edytuj</a>
+                                <a th:href="@{/orders/delete/{id}(id=${order.id})}" class="btn btn-danger btn-sm">Usuń</a>
+                            </span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
-        <td th:text="${order.id}"></td>
+        </div>
+    </div>
 
-        <td th:text="${order.dataZamowienia}"></td>
-
-        <td th:text="${order.status}"></td>
-
-        <td>
-            <span th:each="product : ${order.products}"
-                  th:text="${product.nazwa + ' '}">
-            </span>
-        </td>
-
-        <td>
-            <a th:href="@{/orders/edit/{id}(id=${order.id})}">
-                Edytuj
-            </a>
-        </td>
-
-        <td>
-            <a th:href="@{/orders/delete/{id}(id=${order.id})}">
-                Usuń
-            </a>
-        </td>
-
-    </tr>
-
-</table>
-
-<br><br>
-
-<a href="/">
-    Powrót do strony głównej
-</a>
-
+</div>
 </body>
 </html>

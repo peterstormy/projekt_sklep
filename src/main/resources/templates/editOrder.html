@@ -1,75 +1,169 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6">
 <head>
     <title>Edytuj zamówienie</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<div class="layout">
 
-<h1>Edytuj zamówienie</h1>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-<form th:action="@{/orders/update}"
-      th:object="${order}"
-      method="post">
+    <div class="main">
+        <div class="topbar">
+            <span class="topbar-title" th:text="'Edytuj zamówienie #' + ${order.id}">Edytuj zamówienie</span>
+            <span class="topbar-user" sec:authentication="name"></span>
+        </div>
 
-    <input type="hidden"
-           th:field="*{id}">
+        <div class="content">
 
-    Data:
+            <div style="margin-bottom:16px;display:flex;gap:8px;">
+                <a th:href="@{/orders/{id}(id=${order.id})}" class="btn btn-secondary btn-sm">← Podgląd</a>
+                <a href="/orders" class="btn btn-secondary btn-sm">Lista zamówień</a>
+            </div>
 
-    <input type="date"
-           th:field="*{dataZamowienia}">
+            <!-- Sekcja 1: Data i status -->
+            <div class="card" style="margin-bottom:14px;">
+                <h3 style="font-size:13px;font-weight:600;color:#71717a;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:14px;">Dane zamówienia</h3>
+                <form th:action="@{/orders/update}" method="post">
+                    <input type="hidden" name="id" th:value="${order.id}">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+                        <div class="form-group" style="margin:0;">
+                            <label>Data zamówienia</label>
+                            <input type="date" name="dataZamowienia" th:value="${order.dataZamowienia}">
+                        </div>
+                        <div class="form-group" style="margin:0;">
+                            <label>Status</label>
+                            <select name="status">
+                                <option value="NOWE" th:selected="${order.status == 'NOWE'}">NOWE</option>
+                                <option value="W_REALIZACJI" th:selected="${order.status == 'W_REALIZACJI'}">W REALIZACJI</option>
+                                <option value="ZAKONCZONE" th:selected="${order.status == 'ZAKONCZONE'}">ZAKOŃCZONE</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+                </form>
+            </div>
 
-    <br><br>
+            <!-- Sekcja 2: Produkty w zamówieniu -->
+            <div class="card" style="margin-bottom:14px;">
+                <h3 style="font-size:13px;font-weight:600;color:#71717a;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:14px;">
+                    Produkty w zamówieniu
+                    <span style="font-weight:400;color:#a1a1aa;" th:text="'(' + ${order.items.size()} + ' poz.)'"></span>
+                </h3>
+                <div th:if="${order.items.isEmpty()}" style="color:#a1a1aa;font-size:14px;padding:8px 0;">
+                    Brak produktów — dodaj poniżej.
+                </div>
+                <div class="table-wrapper" th:if="${not order.items.isEmpty()}">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Produkt</th>
+                            <th>Cena jedn.</th>
+                            <th>Ilość</th>
+                            <th>Suma</th>
+                            <th>Usuń</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item : ${order.items}">
+                            <td>
+                                <a th:href="@{/products/{id}(id=${item.product.id})}"
+                                   th:text="${item.product.nazwa}" style="font-weight:500;"></a>
+                                <div style="font-size:12px;color:#71717a;" th:text="${item.product.producent}"></div>
+                            </td>
+                            <td th:text="${item.product.cena + ' zł'}"></td>
+                            <td>
+                                <div style="display:flex;align-items:center;gap:6px;">
+                                    <form th:action="@{/orders/edit/{oid}/decrementItem/{iid}(oid=${order.id},iid=${item.id})}"
+                                          method="post" style="display:inline;"
+                                          th:onsubmit="${item.quantity == 1} ? 'return confirm(\'Usunąć ten produkt z zamówienia?\')' : 'return true'">
+                                        <button type="submit" class="qty-btn">−</button>
+                                    </form>
+                                    <span th:text="${item.quantity}"
+                                          style="min-width:28px;text-align:center;font-weight:600;font-size:15px;"></span>
+                                    <form th:action="@{/orders/edit/{oid}/incrementItem/{iid}(oid=${order.id},iid=${item.id})}"
+                                          method="post" style="display:inline;">
+                                        <button type="submit" class="qty-btn">+</button>
+                                    </form>
+                                </div>
+                            </td>
+                            <td style="font-weight:600;"
+                                th:text="${#numbers.formatDecimal(item.product.cena * item.quantity, 1, 2) + ' zł'}"></td>
+                            <td>
+                                <form th:action="@{/orders/edit/{oid}/removeItem/{iid}(oid=${order.id},iid=${item.id})}"
+                                      method="post" style="display:inline;"
+                                      onsubmit="return confirm('Usunąć ten produkt z zamówienia?')">
+                                    <button type="submit" class="btn btn-danger btn-sm">Usuń</button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div th:if="${not order.items.isEmpty()}"
+                     style="margin-top:10px;text-align:right;font-size:15px;font-weight:700;color:#e07b39;"
+                     th:text="'Suma: ' + ${#numbers.formatDecimal(orderTotal, 1, 2)} + ' zł'">
+                </div>
+            </div>
 
-    Status:
+            <!-- Sekcja 3: Dodaj produkt -->
+            <div class="card">
+                <h3 style="font-size:13px;font-weight:600;color:#71717a;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:14px;">
+                    Dodaj produkt do zamówienia
+                </h3>
+                <form th:action="@{/orders/edit/{id}(id=${order.id})}" method="get"
+                      style="display:flex;gap:8px;align-items:center;margin-bottom:14px;">
+                    <input type="text" name="productSearch" th:value="${productSearch}"
+                           placeholder="Szukaj po nazwie lub producencie..." style="max-width:320px;">
+                    <button type="submit" class="btn btn-secondary btn-sm">Szukaj</button>
+                    <a th:if="${productSearch != null}"
+                       th:href="@{/orders/edit/{id}(id=${order.id})}"
+                       class="btn btn-secondary btn-sm">✕</a>
+                </form>
+                <div th:if="${productsToAdd.isEmpty()}" style="color:#a1a1aa;font-size:14px;">
+                    <span th:if="${productSearch != null}">Brak wyników dla "<span th:text="${productSearch}"></span>".</span>
+                    <span th:if="${productSearch == null}">Wszystkie produkty są już w zamówieniu.</span>
+                </div>
+                <div class="table-wrapper" th:if="${not productsToAdd.isEmpty()}">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Nazwa</th>
+                            <th>Producent</th>
+                            <th>Kategoria</th>
+                            <th>Cena</th>
+                            <th>Stan</th>
+                            <th>Dodaj</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="product : ${productsToAdd}">
+                            <td th:text="${product.nazwa}"></td>
+                            <td th:text="${product.producent}"></td>
+                            <td th:text="${product.category != null ? product.category.nazwa : '—'}"></td>
+                            <td th:text="${product.cena + ' zł'}"></td>
+                            <td>
+                                <span th:if="${product.ilosc > 0}" class="stock-ok" th:text="${product.ilosc + ' szt.'}"></span>
+                                <span th:if="${product.ilosc == 0}" class="stock-out">Brak</span>
+                            </td>
+                            <td>
+                                <form th:action="@{/orders/edit/{oid}/addProduct/{pid}(oid=${order.id},pid=${product.id})}"
+                                      method="post" style="display:inline;">
+                                    <input type="hidden" name="productSearch" th:value="${productSearch}">
+                                    <button type="submit" class="btn btn-primary btn-sm">+ Dodaj</button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-    <select th:field="*{status}">
+        </div>
+    </div>
 
-        <option value="NOWE">
-            NOWE
-        </option>
-
-        <option value="W_REALIZACJI">
-            W REALIZACJI
-        </option>
-
-        <option value="ZAKONCZONE">
-            ZAKOŃCZONE
-        </option>
-
-    </select>
-
-    <br><br>
-
-    Produkty:
-
-    <br><br>
-
-    <select th:field="*{products}"
-            multiple
-            size="5">
-
-        <option th:each="product : ${products}"
-                th:value="${product.id}"
-                th:text="${product.nazwa}">
-        </option>
-
-    </select>
-
-    <br><br>
-
-    <button type="submit">
-        Zapisz
-    </button>
-
-</form>
-
-<br><br>
-
-<a href="/orders">
-    Powrót
-</a>
-
+</div>
 </body>
 </html>

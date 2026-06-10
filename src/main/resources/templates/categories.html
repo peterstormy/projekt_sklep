@@ -1,54 +1,51 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6">
 <head>
     <title>Kategorie</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<div class="layout">
 
-<h1>Lista kategorii</h1>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-<a href="/categories/add">
-    Dodaj kategorię
-</a>
+    <div class="main">
+        <div class="topbar">
+            <span class="topbar-title">Kategorie</span>
+            <span class="topbar-user" sec:authentication="name"></span>
+        </div>
 
-<br><br>
+        <div class="content">
+            <div class="page-header">
+                <h2>Lista kategorii</h2>
+                <a href="/categories/add" class="btn btn-primary">+ Dodaj kategorię</a>
+            </div>
 
-<table border="1">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nazwa</th>
+                        <th>Akcje</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="category : ${categories}">
+                        <td th:text="${category.id}"></td>
+                        <td th:text="${category.nazwa}"></td>
+                        <td>
+                            <a th:href="@{/categories/edit/{id}(id=${category.id})}" class="btn btn-secondary btn-sm">Edytuj</a>
+                            <a th:href="@{/categories/delete/{id}(id=${category.id})}" class="btn btn-danger btn-sm">Usuń</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-    <tr>
-        <th>ID</th>
-        <th>Nazwa</th>
-        <th>Edytuj</th>
-        <th>Usuń</th>
-    </tr>
-
-    <tr th:each="category : ${categories}">
-
-        <td th:text="${category.id}"></td>
-        <td th:text="${category.nazwa}"></td>
-
-        <td>
-            <a th:href="@{/categories/edit/{id}(id=${category.id})}">
-                Edytuj
-            </a>
-        </td>
-
-        <td>
-            <a th:href="@{/categories/delete/{id}(id=${category.id})}">
-                Usuń
-            </a>
-        </td>
-
-    </tr>
-
-</table>
-
-<br><br>
-
-<a href="/">
-    Strona główna
-</a>
-
+</div>
 </body>
 </html>

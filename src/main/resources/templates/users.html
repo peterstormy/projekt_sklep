@@ -1,48 +1,64 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6">
 <head>
     <title>Użytkownicy</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<div class="layout">
 
-<h1>Lista użytkowników</h1>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-<table border="1">
+    <div class="main">
+        <div class="topbar">
+            <span class="topbar-title">Użytkownicy</span>
+            <span class="topbar-user" sec:authentication="name"></span>
+        </div>
 
-    <tr>
-        <th>ID</th>
-        <th>Imię</th>
-        <th>Nazwisko</th>
-        <th>Login</th>
-        <th>Wiek</th>
-        <th>Rola</th>
-        <th>Zmień rolę</th>
-    </tr>
+        <div class="content">
 
-    <tr th:each="user : ${users}">
+            <div class="page-header">
+                <h2>Lista użytkowników</h2>
+            </div>
 
-        <td th:text="${user.id}"></td>
-        <td th:text="${user.imie}"></td>
-        <td th:text="${user.nazwisko}"></td>
-        <td th:text="${user.login}"></td>
-        <td th:text="${user.wiek}"></td>
-        <td th:text="${user.rola}"></td>
-        <td>
-            <a th:href="@{/users/editRole/{id}(id=${user.id})}">
-                Zmień
-            </a>
-        </td>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Imię</th>
+                        <th>Nazwisko</th>
+                        <th>Login</th>
+                        <th>Wiek</th>
+                        <th>Rola</th>
+                        <th>Akcje</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.id}"></td>
+                        <td th:text="${user.imie}"></td>
+                        <td th:text="${user.nazwisko}"></td>
+                        <td th:text="${user.login}"></td>
+                        <td th:text="${user.wiek}"></td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${user.rola == 'ADMIN'} ? 'badge-admin' : (${user.rola == 'EMPLOYEE'} ? 'badge-employee' : 'badge-user')"
+                                  th:text="${user.rola}">
+                            </span>
+                        </td>
+                        <td>
+                            <a th:href="@{/users/editRole/{id}(id=${user.id})}" class="btn btn-secondary btn-sm">Zmień rolę</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
-    </tr>
+        </div>
+    </div>
 
-</table>
-
-<br><br>
-
-<a href="/">
-    Powrót do strony głównej
-</a>
-
+</div>
 </body>
 </html>

@@ -1,54 +1,52 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6">
 <head>
     <title>Dodaj zamówienie</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<div class="layout">
 
-<h1>Dodaj zamówienie</h1>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-<form th:action="@{/orders/save}"
-      th:object="${order}"
-      method="post">
+    <div class="main">
+        <div class="topbar">
+            <span class="topbar-title">Dodaj zamówienie</span>
+            <span class="topbar-user" sec:authentication="name"></span>
+        </div>
 
-    Data:
-    <input type="date" th:field="*{dataZamowienia}">
+        <div class="content">
+            <div class="form-card">
+                <p style="font-size:13px;color:#71717a;margin-bottom:16px;">
+                    Utwórz zamówienie — po zapisaniu przejdziesz do edycji, gdzie dodasz produkty.
+                </p>
+                <form th:action="@{/orders/save}" method="post">
 
-    <br><br>
+                    <div class="form-group">
+                        <label>Data zamówienia</label>
+                        <input type="date" name="dataZamowienia"
+                               th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                    </div>
 
-    Status:
-    <select th:field="*{status}">
-        <option value="NOWE">NOWE</option>
-        <option value="W_REALIZACJI">W REALIZACJI</option>
-        <option value="ZAKONCZONE">ZAKOŃCZONE</option>
-    </select>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="status">
+                            <option value="NOWE">NOWE</option>
+                            <option value="W_REALIZACJI">W REALIZACJI</option>
+                            <option value="ZAKONCZONE">ZAKOŃCZONE</option>
+                        </select>
+                    </div>
 
-    <br><br>
-
-    <b>Produkty:</b>
-
-    <br><br>
-
-    <div th:each="product : ${products}">
-        <label>
-            <input type="checkbox"
-                   th:field="*{products}"
-                   th:value="${product.id}">
-            <span th:text="${product.nazwa + ' — ' + product.cena + ' zł'}"></span>
-        </label>
-        <br>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Utwórz i dodaj produkty →</button>
+                        <a href="/orders" class="btn btn-secondary">Anuluj</a>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
-    <br>
-
-    <button type="submit">Dodaj zamówienie</button>
-
-</form>
-
-<br><br>
-
-<a href="/">Strona główna</a>
-
+</div>
 </body>
 </html>

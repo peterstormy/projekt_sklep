@@ -1,65 +1,88 @@
 <!DOCTYPE html>
-<html
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6">
 <head>
     <title>Sklep komputerowy</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<div class="layout">
 
-<center>
-    <p>
-        Zalogowany użytkownik:
-        <span th:text="${#authentication.name}"></span>
-    </p>
-    <h1>SKLEP KOMPUTEROWY</h1>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-    <h3>System zarządzania sklepem</h3>
+    <div class="main">
+        <div class="topbar">
+            <span class="topbar-title">Strona główna</span>
+            <span class="topbar-user" sec:authentication="name"></span>
+        </div>
 
-    <hr width="50%">
+        <div class="content">
 
-    <br>
+            <!-- Widok dla ADMIN/EMPLOYEE -->
+            <div sec:authorize="hasAnyRole('ADMIN','EMPLOYEE')">
+                <div class="card" style="margin-bottom:14px;">
+                    <h2 style="margin-bottom:8px;">Witaj w systemie zarządzania</h2>
+                    <p style="color:#71717a;font-size:14px;">Zarządzaj produktami, kategoriami i zamówieniami.</p>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+                    <a href="/products" style="text-decoration:none;">
+                        <div class="card" style="text-align:center;cursor:pointer;">
+                            <div style="font-size:28px;margin-bottom:8px;">&#128230;</div>
+                            <div style="font-weight:600;font-size:14px;color:#18181b;">Produkty</div>
+                            <div style="font-size:12px;color:#71717a;margin-top:4px;">Zarządzaj asortymentem</div>
+                        </div>
+                    </a>
+                    <a href="/categories" style="text-decoration:none;">
+                        <div class="card" style="text-align:center;cursor:pointer;">
+                            <div style="font-size:28px;margin-bottom:8px;">&#127991;</div>
+                            <div style="font-weight:600;font-size:14px;color:#18181b;">Kategorie</div>
+                            <div style="font-size:12px;color:#71717a;margin-top:4px;">Organizuj produkty</div>
+                        </div>
+                    </a>
+                    <a href="/orders" style="text-decoration:none;">
+                        <div class="card" style="text-align:center;cursor:pointer;">
+                            <div style="font-size:28px;margin-bottom:8px;">&#128203;</div>
+                            <div style="font-weight:600;font-size:14px;color:#18181b;">Zamówienia</div>
+                            <div style="font-size:12px;color:#71717a;margin-top:4px;">Zarządzaj zamówieniami</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
 
-    <a href="/products">
-        Produkty
-    </a>
+            <!-- Widok dla USER -->
+            <div sec:authorize="hasRole('USER')">
+                <div class="card" style="margin-bottom:14px;">
+                    <h2 style="margin-bottom:8px;">Witaj w sklepie komputerowym!</h2>
+                    <p style="color:#71717a;font-size:14px;">Przeglądaj produkty, dodawaj do koszyka i składaj zamówienia.</p>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+                    <a href="/products" style="text-decoration:none;">
+                        <div class="card" style="text-align:center;cursor:pointer;">
+                            <div style="font-size:28px;margin-bottom:8px;">&#128230;</div>
+                            <div style="font-weight:600;font-size:14px;color:#18181b;">Produkty</div>
+                            <div style="font-size:12px;color:#71717a;margin-top:4px;">Przeglądaj asortyment</div>
+                        </div>
+                    </a>
+                    <a href="/cart" style="text-decoration:none;">
+                        <div class="card" style="text-align:center;cursor:pointer;">
+                            <div style="font-size:28px;margin-bottom:8px;">&#128717;</div>
+                            <div style="font-weight:600;font-size:14px;color:#18181b;">Koszyk</div>
+                            <div style="font-size:12px;color:#71717a;margin-top:4px;">Twoje zakupy</div>
+                        </div>
+                    </a>
+                    <a href="/orders" style="text-decoration:none;">
+                        <div class="card" style="text-align:center;cursor:pointer;">
+                            <div style="font-size:28px;margin-bottom:8px;">&#128203;</div>
+                            <div style="font-weight:600;font-size:14px;color:#18181b;">Zamówienia</div>
+                            <div style="font-size:12px;color:#71717a;margin-top:4px;">Twoje zamówienia</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
 
-    <br><br>
-
-    <a href="/categories">
-        Kategorie
-    </a>
-
-    <br><br>
-
-    <a href="/orders">
-        Zamówienia
-    </a>
-
-    <br><br>
-
-    <div sec:authorize="hasRole('ADMIN')">
-        <a href="/users">
-            Użytkownicy
-        </a>
+        </div>
     </div>
 
-    <br><br>
-
-    <hr width="50%">
-
-    <br><br>
-
-    <br><br>
-
-    <form th:action="@{/logout}" method="post">
-        <button type="submit">
-            Wyloguj
-        </button>
-    </form>
-
-</center>
-
+</div>
 </body>
 </html>

@@ -1,90 +1,81 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6">
 <head>
     <title>Dodaj produkt</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<div class="layout">
 
-<h1>Dodaj produkt</h1>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-<form th:action="@{/products/save}"
-      th:object="${product}"
-      method="post">
+    <div class="main">
+        <div class="topbar">
+            <span class="topbar-title">Dodaj produkt</span>
+            <span class="topbar-user" sec:authentication="name"></span>
+        </div>
 
-    <label>Nazwa:</label>
-    <input type="text" th:field="*{nazwa}">
-    <span th:if="${#fields.hasErrors('nazwa')}"
-          th:errors="*{nazwa}"></span>
+        <div class="content">
+            <div class="form-card">
+                <form th:action="@{/products/save}" th:object="${product}" method="post">
 
-    <br><br>
+                    <div class="form-group">
+                        <label>Nazwa</label>
+                        <input type="text" th:field="*{nazwa}" placeholder="Nazwa produktu">
+                        <div class="form-error" th:if="${#fields.hasErrors('nazwa')}" th:errors="*{nazwa}"></div>
+                    </div>
 
-    <label>Opis:</label>
-    <input type="text" th:field="*{opis}">
-    <span th:if="${#fields.hasErrors('opis')}"
-          th:errors="*{opis}"></span>
+                    <div class="form-group">
+                        <label>Opis</label>
+                        <input type="text" th:field="*{opis}" placeholder="Opis produktu">
+                        <div class="form-error" th:if="${#fields.hasErrors('opis')}" th:errors="*{opis}"></div>
+                    </div>
 
-    <br><br>
+                    <div class="form-group">
+                        <label>Producent</label>
+                        <input type="text" th:field="*{producent}" placeholder="Nazwa producenta">
+                        <div class="form-error" th:if="${#fields.hasErrors('producent')}" th:errors="*{producent}"></div>
+                    </div>
 
-    <label>Producent:</label>
-    <input type="text" th:field="*{producent}">
-    <span th:if="${#fields.hasErrors('producent')}"
-          th:errors="*{producent}"></span>
+                    <div class="form-group">
+                        <label>Cena (zł)</label>
+                        <input type="number" step="0.01" min="0.01" th:field="*{cena}" placeholder="0.00">
+                        <div class="form-error" th:if="${#fields.hasErrors('cena')}" th:errors="*{cena}"></div>
+                    </div>
 
-    <br><br>
+                    <div class="form-group">
+                        <label>Ilość</label>
+                        <input type="number" th:field="*{ilosc}" placeholder="0">
+                        <div class="form-error" th:if="${#fields.hasErrors('ilosc')}" th:errors="*{ilosc}"></div>
+                    </div>
 
-    <label>Cena:</label>
-    <input type="number"
-           step="0.01"
-           th:field="*{cena}">
-    <span th:if="${#fields.hasErrors('cena')}"
-          th:errors="*{cena}"></span>
+                    <div class="form-group">
+                        <label>Kategoria</label>
+                        <select th:field="*{category}">
+                            <option th:each="category : ${categories}"
+                                    th:value="${category.id}"
+                                    th:text="${category.nazwa}">
+                            </option>
+                        </select>
+                    </div>
 
-    <br><br>
+                    <div class="form-group">
+                        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                            <input type="checkbox" th:field="*{publiczny}" style="width:auto;">
+                            Udostępnij publicznie
+                        </label>
+                    </div>
 
-    <label>Ilość:</label>
-    <input type="number"
-           th:field="*{ilosc}">
-    <span th:if="${#fields.hasErrors('ilosc')}"
-          th:errors="*{ilosc}"></span>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Dodaj produkt</button>
+                        <a href="/products" class="btn btn-secondary">Anuluj</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-    <br><br>
-
-    <label>Kategoria:</label>
-
-    <select th:field="*{category}">
-        <option th:each="category : ${categories}"
-                th:value="${category.id}"
-                th:text="${category.nazwa}">
-        </option>
-    </select>
-
-    <br><br>
-
-    <label>Udostępnij publicznie:</label>
-
-    <input type="checkbox"
-           th:field="*{publiczny}">
-
-    <br><br>
-
-    <button type="submit">
-        Dodaj produkt
-    </button>
-
-</form>
-
-<br>
-
-<a href="/products">
-    Powrót do listy produktów
-</a>
-
-<br><br>
-
-<a href="/">
-    Strona główna
-</a>
-
+</div>
 </body>
 </html>
