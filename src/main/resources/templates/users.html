@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6">
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6"
+      lang="pl">
 <head>
     <title>Użytkownicy</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -16,7 +17,7 @@
             <span class="topbar-user" sec:authentication="name"></span>
         </div>
 
-        <div class="content">
+        <main class="content">
 
             <div class="page-header">
                 <h2>Lista użytkowników</h2>
@@ -26,13 +27,13 @@
                 <table>
                     <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Imię</th>
-                        <th>Nazwisko</th>
-                        <th>Login</th>
-                        <th>Wiek</th>
-                        <th>Rola</th>
-                        <th>Akcje</th>
+                        <th scope="col">ID</th>
+                        <th scope="col">Imię</th>
+                        <th scope="col">Nazwisko</th>
+                        <th scope="col">Login</th>
+                        <th scope="col">Wiek</th>
+                        <th scope="col">Rola</th>
+                        <th scope="col">Akcje</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -50,13 +51,15 @@
                         </td>
                         <td>
                             <a th:href="@{/users/editRole/{id}(id=${user.id})}" class="btn btn-secondary btn-sm">Zmień rolę</a>
+                            <a th:href="@{/users/delete/{id}(id=${user.id})}" class="btn btn-danger btn-sm"
+                               onclick="return confirm('Czy na pewno chcesz usunąć tego użytkownika?')">Usuń</a>
                         </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
 
-        </div>
+        </main>
     </div>
 
 </div>

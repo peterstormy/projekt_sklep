@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6">
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6"
+      lang="pl">
 <head>
     <title>Dodaj kategorię</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -16,14 +17,27 @@
             <span class="topbar-user" sec:authentication="name"></span>
         </div>
 
-        <div class="content">
+        <main class="content">
             <div class="form-card">
                 <form th:action="@{/categories/save}" th:object="${category}" method="post">
 
                     <div class="form-group">
-                        <label>Nazwa</label>
-                        <input type="text" th:field="*{nazwa}" placeholder="Nazwa kategorii">
-                        <div class="form-error" th:if="${#fields.hasErrors('nazwa')}" th:errors="*{nazwa}"></div>
+                        <label for="nazwa">Nazwa (małe litery, 3–20 znaków)</label>
+                        <input type="text" th:field="*{nazwa}" placeholder="np. akcesoria">
+                        <div class="form-error" role="alert" th:if="${#fields.hasErrors('nazwa')}" th:errors="*{nazwa}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="opis">Opis</label>
+                        <textarea th:field="*{opis}" placeholder="Opis kategorii" rows="3" style="width:100%;resize:vertical;"></textarea>
+                        <div class="form-error" role="alert" th:if="${#fields.hasErrors('opis')}" th:errors="*{opis}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                            <input type="checkbox" th:field="*{aktywna}" style="width:auto;">
+                            Kategoria aktywna
+                        </label>
                     </div>
 
                     <div class="form-actions">
@@ -32,7 +46,7 @@
                     </div>
                 </form>
             </div>
-        </div>
+        </main>
     </div>
 
 </div>

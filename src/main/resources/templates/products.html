@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6">
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6"
+      lang="pl">
 <head>
     <title>Produkty</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -16,7 +17,7 @@
             <span class="topbar-user" sec:authentication="name"></span>
         </div>
 
-        <div class="content">
+        <main class="content">
 
             <div class="page-header">
                 <h2>Lista produktów</h2>
@@ -25,11 +26,21 @@
                 </div>
             </div>
 
+            <!-- Ostatnio przeglądana kategoria (ciasteczko) -->
+            <div th:if="${lastCategoryName != null}"
+                 style="margin-bottom:12px;padding:10px 14px;background:#fef9ec;border:1px solid #fde68a;border-radius:6px;font-size:13px;color:#71717a;">
+                Ostatnio przeglądana kategoria:
+                <a th:href="@{/products(categoryId=${lastCategoryId})}"
+                   th:text="${lastCategoryName}"
+                   style="color:#e07b39;font-weight:600;text-decoration:none;"></a>
+            </div>
+
             <!-- Filtry -->
             <div class="filters">
                 <span class="filter-label">Data od:</span>
                 <form action="/products" method="get" style="display:flex;gap:8px;align-items:center;">
-                    <input type="date" name="data" th:value="${data}" style="width:auto;">
+                    <label for="data" style="display:none;">Data od</label>
+                    <input type="date" id="data" name="data" th:value="${data}" style="width:auto;">
                     <input type="hidden" name="categoryId" th:if="${categoryId != null}" th:value="${categoryId}">
                     <button type="submit" class="btn btn-secondary btn-sm">Filtruj</button>
                     <a th:if="${data != null}" href="/products" class="btn btn-secondary btn-sm">✕</a>
@@ -52,50 +63,50 @@
                 <table>
                     <thead>
                     <tr>
-                        <th>
+                        <th scope="col">
                             <a th:href="${sortField == 'id' && sortDir == 'asc'} ? @{/products(sortField='id',sortDir='desc',categoryId=${categoryId},data=${data})} : (${sortField == 'id' && sortDir == 'desc'} ? @{/products(sortField='id',sortDir='asc',categoryId=${categoryId},data=${data})} : @{/products(sortField='id',sortDir='asc',categoryId=${categoryId},data=${data})})">
                                 ID
                                 <span th:if="${sortField == 'id' && sortDir == 'asc'}">↑</span>
                                 <span th:if="${sortField == 'id' && sortDir == 'desc'}">↓</span>
                             </a>
                         </th>
-                        <th>
+                        <th scope="col">
                             <a th:href="${sortField == 'nazwa' && sortDir == 'asc'} ? @{/products(sortField='nazwa',sortDir='desc',categoryId=${categoryId},data=${data})} : (${sortField == 'nazwa' && sortDir == 'desc'} ? @{/products(sortField='id',sortDir='asc',categoryId=${categoryId},data=${data})} : @{/products(sortField='nazwa',sortDir='asc',categoryId=${categoryId},data=${data})})">
                                 Nazwa
                                 <span th:if="${sortField == 'nazwa' && sortDir == 'asc'}">↑</span>
                                 <span th:if="${sortField == 'nazwa' && sortDir == 'desc'}">↓</span>
                             </a>
                         </th>
-                        <th>
+                        <th scope="col">
                             <a th:href="${sortField == 'producent' && sortDir == 'asc'} ? @{/products(sortField='producent',sortDir='desc',categoryId=${categoryId},data=${data})} : (${sortField == 'producent' && sortDir == 'desc'} ? @{/products(sortField='id',sortDir='asc',categoryId=${categoryId},data=${data})} : @{/products(sortField='producent',sortDir='asc',categoryId=${categoryId},data=${data})})">
                                 Producent
                                 <span th:if="${sortField == 'producent' && sortDir == 'asc'}">↑</span>
                                 <span th:if="${sortField == 'producent' && sortDir == 'desc'}">↓</span>
                             </a>
                         </th>
-                        <th>
+                        <th scope="col">
                             <a th:href="${sortField == 'cena' && sortDir == 'asc'} ? @{/products(sortField='cena',sortDir='desc',categoryId=${categoryId},data=${data})} : (${sortField == 'cena' && sortDir == 'desc'} ? @{/products(sortField='id',sortDir='asc',categoryId=${categoryId},data=${data})} : @{/products(sortField='cena',sortDir='asc',categoryId=${categoryId},data=${data})})">
                                 Cena
                                 <span th:if="${sortField == 'cena' && sortDir == 'asc'}">↑</span>
                                 <span th:if="${sortField == 'cena' && sortDir == 'desc'}">↓</span>
                             </a>
                         </th>
-                        <th>
+                        <th scope="col">
                             <a th:href="${sortField == 'ilosc' && sortDir == 'asc'} ? @{/products(sortField='ilosc',sortDir='desc',categoryId=${categoryId},data=${data})} : (${sortField == 'ilosc' && sortDir == 'desc'} ? @{/products(sortField='id',sortDir='asc',categoryId=${categoryId},data=${data})} : @{/products(sortField='ilosc',sortDir='asc',categoryId=${categoryId},data=${data})})">
                                 Ilość
                                 <span th:if="${sortField == 'ilosc' && sortDir == 'asc'}">↑</span>
                                 <span th:if="${sortField == 'ilosc' && sortDir == 'desc'}">↓</span>
                             </a>
                         </th>
-                        <th>
+                        <th scope="col">
                             <a th:href="${sortField == 'dataDodania' && sortDir == 'asc'} ? @{/products(sortField='dataDodania',sortDir='desc',categoryId=${categoryId},data=${data})} : (${sortField == 'dataDodania' && sortDir == 'desc'} ? @{/products(sortField='id',sortDir='asc',categoryId=${categoryId},data=${data})} : @{/products(sortField='dataDodania',sortDir='asc',categoryId=${categoryId},data=${data})})">
                                 Data dodania
                                 <span th:if="${sortField == 'dataDodania' && sortDir == 'asc'}">↑</span>
                                 <span th:if="${sortField == 'dataDodania' && sortDir == 'desc'}">↓</span>
                             </a>
                         </th>
-                        <th>Kategoria</th>
-                        <th sec:authorize="hasAnyRole('ADMIN','EMPLOYEE')">Akcje</th>
+                        <th scope="col">Kategoria</th>
+                        <th scope="col" sec:authorize="hasAnyRole('ADMIN','EMPLOYEE')">Akcje</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -116,7 +127,7 @@
                 </table>
             </div>
 
-        </div>
+        </main>
     </div>
 
 </div>

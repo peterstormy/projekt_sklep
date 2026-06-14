@@ -50,6 +50,15 @@ public class SecurityConfig {
                         .requestMatchers("/users/**")
                         .hasRole("ADMIN")
 
+                        .requestMatchers(
+                                "/categories/add",
+                                "/categories/save",
+                                "/categories/edit/**",
+                                "/categories/update",
+                                "/categories/delete/**"
+                        )
+                        .hasAnyRole("ADMIN", "EMPLOYEE")
+
                         .anyRequest()
                         .authenticated()
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="pl">
 <head>
     <title>Rejestracja</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -13,28 +13,33 @@
         <form th:action="@{/register/save}" th:object="${user}" method="post">
 
             <div class="form-group">
-                <label>Imię</label>
+                <label for="imie">Imię</label>
                 <input type="text" th:field="*{imie}" placeholder="Wpisz imię">
+                <div class="form-error" role="alert" th:if="${#fields.hasErrors('imie')}" th:errors="*{imie}"></div>
             </div>
 
             <div class="form-group">
-                <label>Nazwisko</label>
+                <label for="nazwisko">Nazwisko</label>
                 <input type="text" th:field="*{nazwisko}" placeholder="Wpisz nazwisko">
+                <div class="form-error" role="alert" th:if="${#fields.hasErrors('nazwisko')}" th:errors="*{nazwisko}"></div>
             </div>
 
             <div class="form-group">
-                <label>Login</label>
+                <label for="login">Login (małe litery i cyfry)</label>
                 <input type="text" th:field="*{login}" placeholder="Wpisz login">
+                <div class="form-error" role="alert" th:if="${#fields.hasErrors('login')}" th:errors="*{login}"></div>
             </div>
 
             <div class="form-group">
-                <label>Hasło</label>
+                <label for="haslo">Hasło (min. 5 znaków)</label>
                 <input type="password" th:field="*{haslo}" placeholder="Wpisz hasło">
+                <div class="form-error" role="alert" th:if="${#fields.hasErrors('haslo')}" th:errors="*{haslo}"></div>
             </div>
 
             <div class="form-group">
-                <label>Wiek</label>
-                <input type="number" th:field="*{wiek}" placeholder="Wpisz wiek" min="1" max="120">
+                <label for="wiek">Wiek (min. 18 lat)</label>
+                <input type="number" th:field="*{wiek}" placeholder="Wpisz wiek" min="18" max="120">
+                <div class="form-error" role="alert" th:if="${#fields.hasErrors('wiek')}" th:errors="*{wiek}"></div>
             </div>
 
             <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">

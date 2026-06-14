@@ -28,7 +28,7 @@ public class Product {
     private String nazwa;
 
     @NotBlank(message = "Opis jest wymagany")
-    @Size(min = 5, max = 200)
+    @Size(min = 5, max = 500)
     private String opis;
 
     @DecimalMin(value = "0.01")

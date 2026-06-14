@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6">
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6"
+      lang="pl">
 <head>
     <title>Zamówienia</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -16,7 +17,7 @@
             <span class="topbar-user" sec:authentication="name"></span>
         </div>
 
-        <div class="content">
+        <main class="content">
 
             <div class="page-header">
                 <h2>Lista zamówień</h2>
@@ -29,7 +30,8 @@
             <div sec:authorize="hasAnyRole('ADMIN','EMPLOYEE')" class="filters" style="margin-bottom:14px;">
                 <span class="filter-label">Szukaj klienta:</span>
                 <form th:action="@{/orders}" method="get" style="display:flex;gap:8px;align-items:center;">
-                    <input type="text" name="search" th:value="${search}"
+                    <label for="search" style="display:none;">Szukaj klienta</label>
+                    <input type="text" id="search" name="search" th:value="${search}"
                            placeholder="Imię, nazwisko lub login..." style="width:220px;">
                     <button type="submit" class="btn btn-secondary btn-sm">Szukaj</button>
                     <a th:if="${search != null}" href="/orders" class="btn btn-secondary btn-sm">✕ Wyczyść</a>
@@ -40,11 +42,11 @@
                 <table>
                     <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Data</th>
-                        <th>Status</th>
-                        <th th:if="${isAdmin}">Klient</th>
-                        <th>Akcje</th>
+                        <th scope="col">ID</th>
+                        <th scope="col">Data</th>
+                        <th scope="col">Status</th>
+                        <th scope="col" th:if="${isAdmin}">Klient</th>
+                        <th scope="col">Akcje</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -76,7 +78,7 @@
                 </table>
             </div>
 
-        </div>
+        </main>
     </div>
 
 </div>

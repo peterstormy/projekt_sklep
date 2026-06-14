@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6">
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6"
+      lang="pl">
 <head>
     <title>Kategorie</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -16,26 +17,39 @@
             <span class="topbar-user" sec:authentication="name"></span>
         </div>
 
-        <div class="content">
+        <main class="content">
             <div class="page-header">
                 <h2>Lista kategorii</h2>
-                <a href="/categories/add" class="btn btn-primary">+ Dodaj kategorię</a>
+                <div sec:authorize="hasAnyRole('ADMIN','EMPLOYEE')">
+                    <a href="/categories/add" class="btn btn-primary">+ Dodaj kategorię</a>
+                </div>
             </div>
 
             <div class="table-wrapper">
                 <table>
                     <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Nazwa</th>
-                        <th>Akcje</th>
+                        <th scope="col">ID</th>
+                        <th scope="col">Nazwa</th>
+                        <th scope="col">Opis</th>
+                        <th scope="col">Data dodania</th>
+                        <th scope="col">Status</th>
+                        <th scope="col" sec:authorize="hasAnyRole('ADMIN','EMPLOYEE')">Akcje</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="category : ${categories}">
                         <td th:text="${category.id}"></td>
-                        <td th:text="${category.nazwa}"></td>
+                        <td><a th:href="@{/categories/{id}(id=${category.id})}" th:text="${category.nazwa}"></a></td>
+                        <td th:text="${category.opis != null ? category.opis : '—'}"></td>
+                        <td th:text="${category.dataDodania != null ? category.dataDodania : '—'}"></td>
                         <td>
+                            <span class="badge"
+                                  th:classappend="${category.aktywna} ? 'badge-employee' : 'badge-user'"
+                                  th:text="${category.aktywna} ? 'Aktywna' : 'Nieaktywna'">
+                            </span>
+                        </td>
+                        <td sec:authorize="hasAnyRole('ADMIN','EMPLOYEE')">
                             <a th:href="@{/categories/edit/{id}(id=${category.id})}" class="btn btn-secondary btn-sm">Edytuj</a>
                             <a th:href="@{/categories/delete/{id}(id=${category.id})}" class="btn btn-danger btn-sm">Usuń</a>
                         </td>
@@ -43,7 +57,7 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </main>
     </div>
 
 </div>

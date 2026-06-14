@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6">
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6"
+      lang="pl">
 <head>
     <title>Edytuj produkt</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -16,34 +17,51 @@
             <span class="topbar-user" sec:authentication="name"></span>
         </div>
 
-        <div class="content">
+        <main class="content">
             <div class="form-card">
                 <form th:action="@{/products/update}" th:object="${product}" method="post">
                     <input type="hidden" th:field="*{id}">
 
                     <div class="form-group">
-                        <label>Nazwa</label>
+                        <label for="nazwa">Nazwa</label>
                         <input type="text" th:field="*{nazwa}">
                     </div>
 
                     <div class="form-group">
-                        <label>Opis</label>
+                        <label for="opis">Opis</label>
                         <input type="text" th:field="*{opis}">
                     </div>
 
                     <div class="form-group">
-                        <label>Producent</label>
+                        <label for="producent">Producent</label>
                         <input type="text" th:field="*{producent}">
                     </div>
 
                     <div class="form-group">
-                        <label>Cena (zł)</label>
+                        <label for="cena">Cena (zł)</label>
                         <input type="number" step="0.01" min="0.01" th:field="*{cena}">
                     </div>
 
                     <div class="form-group">
-                        <label>Ilość</label>
+                        <label for="ilosc">Ilość</label>
                         <input type="number" th:field="*{ilosc}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Kategoria</label>
+                        <select th:field="*{category}">
+                            <option th:each="category : ${categories}"
+                                    th:value="${category.id}"
+                                    th:text="${category.nazwa}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                            <input type="checkbox" th:field="*{publiczny}" style="width:auto;">
+                            Udostępnij publicznie
+                        </label>
                     </div>
 
                     <div class="form-actions">
@@ -52,7 +70,7 @@
                     </div>
                 </form>
             </div>
-        </div>
+        </main>
     </div>
 
 </div>

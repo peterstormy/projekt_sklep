@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6">
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6"
+      lang="pl">
 <head>
     <title th:text="${product.nazwa}">Produkt</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -16,7 +17,7 @@
             <span class="topbar-user" sec:authentication="name"></span>
         </div>
 
-        <div class="content">
+        <main class="content">
 
             <div style="margin-bottom:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                 <a href="/products" class="btn btn-secondary btn-sm">← Powrót do listy</a>
@@ -77,7 +78,7 @@
                 </div>
             </div>
 
-        </div>
+        </main>
     </div>
 
 </div>

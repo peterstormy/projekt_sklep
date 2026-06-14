@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6">
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6"
+      lang="pl">
 <head>
     <title>Dodaj zamówienie</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -16,7 +17,7 @@
             <span class="topbar-user" sec:authentication="name"></span>
         </div>
 
-        <div class="content">
+        <main class="content">
             <div class="form-card">
                 <p style="font-size:13px;color:#71717a;margin-bottom:16px;">
                     Utwórz zamówienie — po zapisaniu przejdziesz do edycji, gdzie dodasz produkty.
@@ -24,14 +25,14 @@
                 <form th:action="@{/orders/save}" method="post">
 
                     <div class="form-group">
-                        <label>Data zamówienia</label>
-                        <input type="date" name="dataZamowienia"
+                        <label for="dataZamowienia">Data zamówienia</label>
+                        <input type="date" id="dataZamowienia" name="dataZamowienia"
                                th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
                     </div>
 
                     <div class="form-group">
-                        <label>Status</label>
-                        <select name="status">
+                        <label for="status">Status</label>
+                        <select id="status" name="status">
                             <option value="NOWE">NOWE</option>
                             <option value="W_REALIZACJI">W REALIZACJI</option>
                             <option value="ZAKONCZONE">ZAKOŃCZONE</option>
@@ -44,7 +45,7 @@
                     </div>
                 </form>
             </div>
-        </div>
+        </main>
     </div>
 
 </div>

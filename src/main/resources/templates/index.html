@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6">
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6"
+      lang="pl">
 <head>
     <title>Sklep komputerowy</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -16,7 +17,7 @@
             <span class="topbar-user" sec:authentication="name"></span>
         </div>
 
-        <div class="content">
+        <main class="content">
 
             <!-- Widok dla ADMIN/EMPLOYEE -->
             <div sec:authorize="hasAnyRole('ADMIN','EMPLOYEE')">
@@ -80,7 +81,7 @@
                 </div>
             </div>
 
-        </div>
+        </main>
     </div>
 
 </div>

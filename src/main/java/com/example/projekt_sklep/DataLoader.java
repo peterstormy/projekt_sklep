@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -40,6 +41,7 @@ public class DataLoader implements CommandLineRunner {
     @Override
     public void run(String... args) {
         loadUsers();
+        migrateCategories();
         loadProducts();
     }
 
@@ -75,36 +77,46 @@ public class DataLoader implements CommandLineRunner {
         userRepository.save(employee);
     }
 
+    private void migrateCategories() {
+        Map<String, String[]> data = new LinkedHashMap<>();
+        data.put("smartfony",    new String[]{"smartfony",     "Smartfony różnych producentów – Android i iOS.",                    "2024-01-10"});
+        data.put("laptopy",      new String[]{"laptopy",       "Laptopy do pracy, nauki i gier.",                                   "2024-01-10"});
+        data.put("monitory",     new String[]{"monitory",      "Monitory do komputerów stacjonarnych i laptopów.",                  "2024-01-10"});
+        data.put("telewizory",   new String[]{"telewizory",    "Telewizory różnych rozmiarów i technologii.",                       "2024-01-10"});
+        data.put("plyty glowne", new String[]{"plyty glowne",  "Płyty główne do komputerów stacjonarnych.",                        "2024-01-10"});
+        data.put("sluchawki",    new String[]{"sluchawki",     "Słuchawki nauszne i douszne dla graczy i audiofili.",              "2024-01-10"});
+        data.put("tablety",      new String[]{"tablety",       "Tablety z systemami Android i iPadOS.",                            "2024-01-10"});
+
+        List<Category> all = categoryRepository.findAll();
+        for (Category c : all) {
+            String key = c.getNazwa().toLowerCase();
+            String[] row = data.get(key);
+            if (row == null) continue;
+            c.setNazwa(row[0]);
+            if (c.getOpis() == null) c.setOpis(row[1]);
+            if (c.getDataDodania() == null) c.setDataDodania(LocalDate.parse(row[2]));
+            c.setAktywna(true);
+            categoryRepository.save(c);
+        }
+    }
+
     private void loadProducts() {
         if (categoryRepository.count() > 0) return;
 
-        Category smartfony = new Category();
-        smartfony.setNazwa("Smartfony");
-        categoryRepository.save(smartfony);
-
-        Category laptopy = new Category();
-        laptopy.setNazwa("Laptopy");
-        categoryRepository.save(laptopy);
-
-        Category monitory = new Category();
-        monitory.setNazwa("Monitory");
-        categoryRepository.save(monitory);
-
-        Category telewizory = new Category();
-        telewizory.setNazwa("Telewizory");
-        categoryRepository.save(telewizory);
-
-        Category plytyGlowne = new Category();
-        plytyGlowne.setNazwa("Plyty glowne");
-        categoryRepository.save(plytyGlowne);
-
-        Category sluchawki = new Category();
-        sluchawki.setNazwa("Sluchawki");
-        categoryRepository.save(sluchawki);
-
-        Category tablety = new Category();
-        tablety.setNazwa("Tablety");
-        categoryRepository.save(tablety);
+        Category smartfony = saveCategory("smartfony",
+                "Smartfony różnych producentów – Android i iOS.", LocalDate.of(2024, 1, 10));
+        Category laptopy = saveCategory("laptopy",
+                "Laptopy do pracy, nauki i gier.", LocalDate.of(2024, 1, 10));
+        Category monitory = saveCategory("monitory",
+                "Monitory do komputerów stacjonarnych i laptopów.", LocalDate.of(2024, 1, 10));
+        Category telewizory = saveCategory("telewizory",
+                "Telewizory różnych rozmiarów i technologii.", LocalDate.of(2024, 1, 10));
+        Category plytyGlowne = saveCategory("plyty glowne",
+                "Płyty główne do komputerów stacjonarnych.", LocalDate.of(2024, 1, 10));
+        Category sluchawki = saveCategory("sluchawki",
+                "Słuchawki nauszne i douszne dla graczy i audiofili.", LocalDate.of(2024, 1, 10));
+        Category tablety = saveCategory("tablety",
+                "Tablety z systemami Android i iPadOS.", LocalDate.of(2024, 1, 10));
 
         // === SMARTFONY ===
 
@@ -505,6 +517,15 @@ public class DataLoader implements CommandLineRunner {
             put("Łączność", "Wi-Fi 6, Bluetooth 5.1, USB-C");
             put("Waga", "490 g (sam tablet)");
         }});
+    }
+
+    private Category saveCategory(String nazwa, String opis, LocalDate dataDodania) {
+        Category c = new Category();
+        c.setNazwa(nazwa);
+        c.setOpis(opis);
+        c.setDataDodania(dataDodania);
+        c.setAktywna(true);
+        return categoryRepository.save(c);
     }
 
     private Product saveProduct(String nazwa, String opis, String producent,

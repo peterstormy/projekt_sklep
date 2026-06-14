@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6">
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6"
+      lang="pl">
 <head>
     <title>Edytuj zamówienie</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -16,7 +17,7 @@
             <span class="topbar-user" sec:authentication="name"></span>
         </div>
 
-        <div class="content">
+        <main class="content">
 
             <div style="margin-bottom:16px;display:flex;gap:8px;">
                 <a th:href="@{/orders/{id}(id=${order.id})}" class="btn btn-secondary btn-sm">← Podgląd</a>
@@ -30,12 +31,12 @@
                     <input type="hidden" name="id" th:value="${order.id}">
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
                         <div class="form-group" style="margin:0;">
-                            <label>Data zamówienia</label>
-                            <input type="date" name="dataZamowienia" th:value="${order.dataZamowienia}">
+                            <label for="dataZamowienia">Data zamówienia</label>
+                            <input type="date" id="dataZamowienia" name="dataZamowienia" th:value="${order.dataZamowienia}">
                         </div>
                         <div class="form-group" style="margin:0;">
-                            <label>Status</label>
-                            <select name="status">
+                            <label for="status">Status</label>
+                            <select id="status" name="status">
                                 <option value="NOWE" th:selected="${order.status == 'NOWE'}">NOWE</option>
                                 <option value="W_REALIZACJI" th:selected="${order.status == 'W_REALIZACJI'}">W REALIZACJI</option>
                                 <option value="ZAKONCZONE" th:selected="${order.status == 'ZAKONCZONE'}">ZAKOŃCZONE</option>
@@ -59,11 +60,11 @@
                     <table>
                         <thead>
                         <tr>
-                            <th>Produkt</th>
-                            <th>Cena jedn.</th>
-                            <th>Ilość</th>
-                            <th>Suma</th>
-                            <th>Usuń</th>
+                            <th scope="col">Produkt</th>
+                            <th scope="col">Cena jedn.</th>
+                            <th scope="col">Ilość</th>
+                            <th scope="col">Suma</th>
+                            <th scope="col">Usuń</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -79,13 +80,13 @@
                                     <form th:action="@{/orders/edit/{oid}/decrementItem/{iid}(oid=${order.id},iid=${item.id})}"
                                           method="post" style="display:inline;"
                                           th:onsubmit="${item.quantity == 1} ? 'return confirm(\'Usunąć ten produkt z zamówienia?\')' : 'return true'">
-                                        <button type="submit" class="qty-btn">−</button>
+                                        <button type="submit" class="qty-btn" aria-label="Zmniejsz ilość">−</button>
                                     </form>
                                     <span th:text="${item.quantity}"
                                           style="min-width:28px;text-align:center;font-weight:600;font-size:15px;"></span>
                                     <form th:action="@{/orders/edit/{oid}/incrementItem/{iid}(oid=${order.id},iid=${item.id})}"
                                           method="post" style="display:inline;">
-                                        <button type="submit" class="qty-btn">+</button>
+                                        <button type="submit" class="qty-btn" aria-label="Zwiększ ilość">+</button>
                                     </form>
                                 </div>
                             </td>
@@ -115,7 +116,8 @@
                 </h3>
                 <form th:action="@{/orders/edit/{id}(id=${order.id})}" method="get"
                       style="display:flex;gap:8px;align-items:center;margin-bottom:14px;">
-                    <input type="text" name="productSearch" th:value="${productSearch}"
+                    <label for="productSearch" style="white-space:nowrap;">Szukaj produktu:</label>
+                    <input type="text" id="productSearch" name="productSearch" th:value="${productSearch}"
                            placeholder="Szukaj po nazwie lub producencie..." style="max-width:320px;">
                     <button type="submit" class="btn btn-secondary btn-sm">Szukaj</button>
                     <a th:if="${productSearch != null}"
@@ -130,12 +132,12 @@
                     <table>
                         <thead>
                         <tr>
-                            <th>Nazwa</th>
-                            <th>Producent</th>
-                            <th>Kategoria</th>
-                            <th>Cena</th>
-                            <th>Stan</th>
-                            <th>Dodaj</th>
+                            <th scope="col">Nazwa</th>
+                            <th scope="col">Producent</th>
+                            <th scope="col">Kategoria</th>
+                            <th scope="col">Cena</th>
+                            <th scope="col">Stan</th>
+                            <th scope="col">Dodaj</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -161,7 +163,7 @@
                 </div>
             </div>
 
-        </div>
+        </main>
     </div>
 
 </div>
