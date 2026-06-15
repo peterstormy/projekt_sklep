@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6"
+      lang="pl">
+<head>
+    <title>Mój profil</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="layout">
+
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <div class="main">
+        <div class="topbar">
+            <span class="topbar-title">Mój profil</span>
+            <span class="topbar-user" sec:authentication="name"></span>
+        </div>
+
+        <main class="content">
+
+            <div class="page-header">
+                <h2>Dane konta</h2>
+                <a href="/profile/edit" class="btn btn-secondary">Edytuj profil</a>
+            </div>
+
+            <div class="card">
+                <div class="detail-grid">
+                    <div class="detail-field">
+                        <div class="label">Imię</div>
+                        <div class="value" th:text="${user.imie}"></div>
+                    </div>
+                    <div class="detail-field">
+                        <div class="label">Nazwisko</div>
+                        <div class="value" th:text="${user.nazwisko}"></div>
+                    </div>
+                    <div class="detail-field">
+                        <div class="label">Login</div>
+                        <div class="value" th:text="${user.login}"></div>
+                    </div>
+                    <div class="detail-field">
+                        <div class="label">Wiek</div>
+                        <div class="value" th:text="${user.wiek + ' lat'}"></div>
+                    </div>
+                    <div class="detail-field">
+                        <div class="label">Rola</div>
+                        <div class="value">
+                            <span class="badge"
+                                  th:classappend="${user.rola == 'ADMIN'} ? 'badge-admin' : (${user.rola == 'EMPLOYEE'} ? 'badge-employee' : 'badge-user')"
+                                  th:text="${user.rola}">
+                            </span>
+                        </div>
+                    </div>
+                    <div class="detail-field" th:if="${user.ostatnieLogowanie != null}">
+                        <div class="label">Ostatnie wylogowanie</div>
+                        <div class="value" th:text="${#temporals.format(user.ostatnieLogowanie, 'dd.MM.yyyy HH:mm')}"></div>
+                    </div>
+                </div>
+            </div>
+
+
+        </main>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6"
+      lang="pl">
+<head>
+    <title>Edytuj profil</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="layout">
+
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <div class="main">
+        <div class="topbar">
+            <span class="topbar-title">Edytuj profil</span>
+            <span class="topbar-user" sec:authentication="name"></span>
+        </div>
+
+        <main class="content">
+            <div class="form-card">
+                <form th:action="@{/profile/edit}" th:object="${form}" method="post">
+
+                    <div class="form-group">
+                        <label for="imie">Imię</label>
+                        <input type="text" th:field="*{imie}" placeholder="Wpisz imię">
+                        <div class="form-error" role="alert" th:if="${#fields.hasErrors('imie')}" th:errors="*{imie}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nazwisko">Nazwisko</label>
+                        <input type="text" th:field="*{nazwisko}" placeholder="Wpisz nazwisko">
+                        <div class="form-error" role="alert" th:if="${#fields.hasErrors('nazwisko')}" th:errors="*{nazwisko}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="wiek">Wiek</label>
+                        <input type="number" th:field="*{wiek}" placeholder="Wpisz wiek" min="18" max="120">
+                        <div class="form-error" role="alert" th:if="${#fields.hasErrors('wiek')}" th:errors="*{wiek}"></div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+                        <a href="/profile" class="btn btn-secondary">Anuluj</a>
+                    </div>
+                </form>
+
+                <div style="margin-top:32px;padding-top:24px;border-top:1px solid #e4e4e7;">
+                    <p style="font-size:13px;color:#71717a;margin-bottom:12px;">Usunięcie konta jest nieodwracalne.</p>
+                    <form th:action="@{/profile/delete}" method="post">
+                        <button type="submit" class="btn btn-danger"
+                                onclick="return confirm('Czy na pewno chcesz usunąć konto?')">
+                            Usuń konto
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</div>
+</body>
+</html>

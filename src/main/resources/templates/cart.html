@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6"
+      lang="pl">
+<head>
+    <title>Koszyk</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="layout">
+
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <main class="main">
+        <div class="topbar">
+            <span class="topbar-title">Koszyk</span>
+            <span class="topbar-user" sec:authentication="name"></span>
+        </div>
+
+        <div class="content">
+
+            <div class="page-header">
+                <h2>Twój koszyk</h2>
+                <div th:if="${not #maps.isEmpty(cart)}">
+                    <form th:action="@{/cart/clear}" method="post" style="display:inline;"
+                          onsubmit="return confirm('Wyczyścić cały koszyk?')">
+                        <button type="submit" class="btn btn-secondary btn-sm">Wyczyść koszyk</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Pusty koszyk -->
+            <div th:if="${#maps.isEmpty(cart)}" class="card" style="text-align:center;padding:40px;">
+                <div style="font-size:40px;margin-bottom:12px;" aria-hidden="true">&#128717;</div>
+                <div style="font-size:15px;font-weight:600;color:#18181b;margin-bottom:6px;">Koszyk jest pusty</div>
+                <div style="font-size:13px;color:#71717a;margin-bottom:16px;">Przejdź do listy produktów i dodaj coś do koszyka.</div>
+                <a href="/products" class="btn btn-primary">Przeglądaj produkty</a>
+            </div>
+
+            <!-- Produkty w koszyku -->
+            <div th:if="${not #maps.isEmpty(cart)}">
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th scope="col">Produkt</th>
+                            <th scope="col">Cena jedn.</th>
+                            <th scope="col">Ilość</th>
+                            <th scope="col">Suma</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="product : ${cartItems}">
+                            <td>
+                                <a th:href="@{/products/{id}(id=${product.id})}" th:text="${product.nazwa}" style="font-weight:500;"></a>
+                                <div style="font-size:12px;color:#71717a;" th:text="${product.producent}"></div>
+                            </td>
+                            <td th:text="${product.cena + ' zł'}"></td>
+                            <td>
+                                <div style="display:flex;align-items:center;gap:6px;">
+                                    <form th:action="@{/cart/decrement/{id}(id=${product.id})}" method="post" style="display:inline;"
+                                          th:onsubmit="${cart[product.id] == 1} ? 'return confirm(\'Usunąć ten produkt z koszyka?\')' : 'return true'">
+                                        <button type="submit" class="qty-btn" aria-label="Zmniejsz ilość">−</button>
+                                    </form>
+                                    <span th:text="${cart[product.id]}" style="min-width:28px;text-align:center;font-weight:600;font-size:15px;"></span>
+                                    <form th:action="@{/cart/increment/{id}(id=${product.id})}" method="post" style="display:inline;">
+                                        <button type="submit" class="qty-btn" aria-label="Zwiększ ilość"
+                                                th:disabled="${cart[product.id] >= product.ilosc}">+</button>
+                                    </form>
+                                </div>
+                                <div style="font-size:11px;color:#a1a1aa;margin-top:2px;"
+                                     th:text="${'max ' + product.ilosc + ' szt.'}"></div>
+                            </td>
+                            <td style="font-weight:600;" th:text="${#numbers.formatDecimal(product.cena * cart[product.id], 1, 2) + ' zł'}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card" style="margin-top:14px;display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                        <div style="font-size:13px;color:#71717a;margin-bottom:2px;">Łączna kwota</div>
+                        <div style="font-size:24px;font-weight:700;color:#e07b39;" th:text="${#numbers.formatDecimal(total, 1, 2) + ' zł'}"></div>
+                    </div>
+                    <form th:action="@{/cart/checkout}" method="post"
+                          onsubmit="return confirm('Złożyć zamówienie? Produkty zostaną zarezerwowane.')">
+                        <button type="submit" class="btn btn-primary">Złóż zamówienie</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</div>
+</body>
+</html>

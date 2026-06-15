@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6"
+      lang="pl">
+<head>
+    <title th:text="'Zamówienie #' + ${order.id}">Zamówienie</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="layout">
+
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <main class="main">
+        <div class="topbar">
+            <span class="topbar-title" th:text="'Zamówienie #' + ${order.id}">Zamówienie</span>
+            <span class="topbar-user" sec:authentication="name"></span>
+        </div>
+
+        <div class="content">
+
+            <div style="margin-bottom:16px;display:flex;gap:8px;align-items:center;">
+                <a href="/orders" class="btn btn-secondary btn-sm">← Powrót do listy</a>
+                <span th:if="${isAdmin}">
+                    <a th:href="@{/orders/edit/{id}(id=${order.id})}" class="btn btn-secondary btn-sm">Edytuj</a>
+                    <a th:href="@{/orders/delete/{id}(id=${order.id})}" class="btn btn-danger btn-sm"
+                       onclick="return confirm('Usunąć to zamówienie?')">Usuń</a>
+                </span>
+            </div>
+
+            <!-- Metadane -->
+            <div class="card" style="margin-bottom:14px;">
+                <div class="detail-grid">
+                    <div class="detail-field">
+                        <div class="label">ID zamówienia</div>
+                        <div class="value" th:text="'#' + ${order.id}"></div>
+                    </div>
+                    <div class="detail-field">
+                        <div class="label">Data zamówienia</div>
+                        <div class="value" th:text="${order.dataZamowienia}"></div>
+                    </div>
+                    <div class="detail-field">
+                        <div class="label">Status</div>
+                        <div class="value">
+                            <span class="badge"
+                                  th:classappend="${order.status == 'NOWE'} ? 'badge-new' : (${order.status == 'W_REALIZACJI'} ? 'badge-progress' : 'badge-done')"
+                                  th:text="${order.status}">
+                            </span>
+                        </div>
+                    </div>
+                    <div class="detail-field" th:if="${isAdmin}">
+                        <div class="label">Klient</div>
+                        <div class="value">
+                            <span th:if="${order.user == null}" style="color:#a1a1aa;">Brak danych</span>
+                            <span th:if="${order.user != null}">
+                                <a th:href="@{/users/editRole/{id}(id=${order.user.id})}"
+                                   th:text="${order.user.imie + ' ' + order.user.nazwisko}"></a>
+                                <span style="font-size:12px;color:#71717a;" th:text="'(' + ${order.user.login} + ')'"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Produkty -->
+            <div class="card">
+                <h3 style="font-size:15px;font-weight:600;margin-bottom:14px;">Zamówione produkty</h3>
+                <div th:if="${order.items.isEmpty()}" style="color:#a1a1aa;font-size:14px;">Brak produktów w zamówieniu.</div>
+                <div class="table-wrapper" th:if="${not order.items.isEmpty()}">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th scope="col">Produkt</th>
+                            <th scope="col">Producent</th>
+                            <th scope="col">Kategoria</th>
+                            <th scope="col">Cena jedn.</th>
+                            <th scope="col">Ilość</th>
+                            <th scope="col">Suma</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item : ${order.items}">
+                            <td>
+                                <a th:href="@{/products/{id}(id=${item.product.id})}"
+                                   th:text="${item.product.nazwa}" style="font-weight:500;"></a>
+                            </td>
+                            <td th:text="${item.product.producent}"></td>
+                            <td th:text="${item.product.category != null ? item.product.category.nazwa : '—'}"></td>
+                            <td th:text="${item.product.cena + ' zł'}"></td>
+                            <td th:text="${item.quantity}"></td>
+                            <td style="font-weight:600;"
+                                th:text="${#numbers.formatDecimal(item.product.cena * item.quantity, 1, 2) + ' zł'}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div th:if="${not order.items.isEmpty()}"
+                     style="margin-top:14px;text-align:right;font-size:16px;font-weight:700;color:#e07b39;"
+                     th:text="'Łącznie: ' + ${#numbers.formatDecimal(total, 1, 2)} + ' zł'">
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</div>
+</body>
+</html>

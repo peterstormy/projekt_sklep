@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/thymeleaf-extras-springsecurity6"
+      lang="pl">
+<head>
+    <title th:text="${category.nazwa}">Kategoria</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="layout">
+
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <div class="main">
+        <div class="topbar">
+            <span class="topbar-title" th:text="${category.nazwa}">Kategoria</span>
+            <span class="topbar-user" sec:authentication="name"></span>
+        </div>
+
+        <main class="content">
+
+            <div style="margin-bottom:16px;display:flex;align-items:center;gap:8px;">
+                <a href="/categories" class="btn btn-secondary btn-sm">← Powrót do listy</a>
+                <span sec:authorize="hasAnyRole('ADMIN','EMPLOYEE')">
+                    <a th:href="@{/categories/edit/{id}(id=${category.id})}" class="btn btn-secondary btn-sm">Edytuj</a>
+                </span>
+            </div>
+
+            <div class="card">
+                <h2 style="font-size:18px;font-weight:600;margin-bottom:16px;" th:text="${category.nazwa}"></h2>
+                <div class="detail-grid">
+                    <div class="detail-field">
+                        <div class="label">Opis</div>
+                        <div class="value" th:text="${category.opis != null ? category.opis : '—'}"></div>
+                    </div>
+                    <div class="detail-field">
+                        <div class="label">Data dodania</div>
+                        <div class="value" th:text="${category.dataDodania != null ? category.dataDodania : '—'}"></div>
+                    </div>
+                    <div class="detail-field">
+                        <div class="label">Status</div>
+                        <div class="value">
+                            <span class="badge"
+                                  th:classappend="${category.aktywna} ? 'badge-employee' : 'badge-user'"
+                                  th:text="${category.aktywna} ? 'Aktywna' : 'Nieaktywna'">
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${not #lists.isEmpty(products)}" class="card">
+                <h3 style="font-size:15px;font-weight:600;margin-bottom:14px;">Produkty w tej kategorii</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th scope="col">Nazwa</th>
+                            <th scope="col">Producent</th>
+                            <th scope="col">Cena</th>
+                            <th scope="col">Ilość</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="product : ${products}">
+                            <td><a th:href="@{/products/{id}(id=${product.id})}" th:text="${product.nazwa}"></a></td>
+                            <td th:text="${product.producent}"></td>
+                            <td th:text="${product.cena + ' zł'}"></td>
+                            <td th:text="${product.ilosc}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div th:if="${#lists.isEmpty(products)}"
+                 style="padding:24px;text-align:center;color:#71717a;background:#fafafa;border-radius:8px;border:1px solid #e4e4e7;">
+                Brak produktów w tej kategorii.
+            </div>
+
+        </main>
+    </div>
+
+</div>
+</body>
+</html>
